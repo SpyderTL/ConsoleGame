@@ -37,11 +37,19 @@ namespace ConsoleGame
 								zone = z;
 						}
 
-						Screen.Characters[(y * Screen.Width) + x] = Map.Zones[zone].Character;
+						if (y == 10 &&
+							x == 20)
+						{
+							// Draw Party
+							Screen.Characters[(10 * Screen.Width) + 20] = ';';
+
+							// Draw Tile Description
+							Screen.DrawString(Map.Zones[zone].Description, 22, 21);
+						}
+						else
+							Screen.Characters[(y * Screen.Width) + x] = Map.Zones[zone].Character;
 					}
 				}
-
-				Screen.Characters[(10 * Screen.Width) + 20] = ';';
 			}
 
 			// Draw Party Status

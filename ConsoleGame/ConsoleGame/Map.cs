@@ -59,6 +59,8 @@ namespace ConsoleGame
 			internal int Bottom;
 			internal int Left;
 			internal int Right;
+
+			public string Description;
 		}
 	}
 }

@@ -6,7 +6,7 @@ namespace RpgGame
 {
 	public static class Map
 	{
-		public static Row[] Rows = new Row[256];
+		public static Row[] Rows;
 
 		public struct Row
 		{

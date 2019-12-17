@@ -13,6 +13,8 @@ namespace RpgGame
 			{
 				reader.BaseStream.Position = Data.Address(bank, offset);
 
+				Map.Rows = new Map.Row[256];
+
 				var rows = new int[256];
 
 				for (int row = 0; row < 256; row++)

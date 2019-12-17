@@ -6,4 +6,8 @@
     <StartupObject>ConsoleGame.Program</StartupObject>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\RpgGame\RpgGame.csproj" />
+  </ItemGroup>
+
 </Project>

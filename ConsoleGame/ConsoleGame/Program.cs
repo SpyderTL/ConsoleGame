@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace ConsoleGame
@@ -105,11 +106,32 @@ namespace ConsoleGame
 						Party.Characters[2] = new Party.Character { Name = "Gamma", Health = 54, MaxHealth = 102, Power = 12, MaxPower = 88 };
 						Party.Characters[3] = new Party.Character { Name = "Delta", Health = 54, MaxHealth = 102, Power = 12, MaxPower = 88 };
 
-						Map.Zones = new Map.Zone[]
+						//Map.Zones = new Map.Zone[]
+						//{
+						//	new Map.Zone { Bottom = 255, Right = 255, Character = '_' },
+						//	new Map.Zone { Top = 100, Left = 100, Bottom = 200, Right = 200, Character = ',' },
+						//	new Map.Zone { Top = 100, Left = 120, Bottom = 200, Right = 140 }
+						//};
+
+						Map.X = 128;
+						Map.Y = 128;
+
+						RpgGame.DataMap.Load(1, 0x0000);
+
+						var zones = new List<Map.Zone>();
+
+						for (var row = 0; row < RpgGame.Map.Rows.Length; row++)
 						{
-							new Map.Zone { Bottom = 255, Right = 255 },
-							new Map.Zone { Bottom = 2, Right = 2, Character = '*' },
-						};
+							var column = 0;
+
+							foreach (var segment in RpgGame.Map.Rows[row].Segments)
+							{
+								zones.Add(new Map.Zone { Top = row, Left = column, Bottom = row, Right = column + segment.Width - 1, Character = (char)(segment.Tile + 'A') });
+								column += segment.Width;
+							}
+						}
+
+						Map.Zones = zones.ToArray();
 
 						InputWorld.Enable();
 

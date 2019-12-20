@@ -3,13 +3,13 @@ using System.Threading;
 
 namespace ConsoleGame
 {
-	internal static class MapScreen
+	internal static class RpgMapScreen
 	{
 		private static AutoResetEvent Close = new AutoResetEvent(false);
 
 		internal static void Show()
 		{
-			Map.PositionChanged += Map_PositionChanged;
+			RpgGame.PartyMap.PositionChanged += Map_PositionChanged;
 
 			Draw();
 

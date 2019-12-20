@@ -21,32 +21,71 @@ namespace RpgGame
 
 			var segment = GetSegment(X, Y - 1);
 
-			if (Map.Tiles[Map.Rows[Y].Segments[segment].Tile].Walk == -1)
+			if (Map.Tiles[Map.Rows[Y - 1].Segments[segment].Tile].Walk == -1)
 				return false;
 
+			Y--;
+			PositionChanged?.Invoke();
 
+			return true;
 		}
 
 		public static bool South()
 		{
+			if (Y == Rows.Length - 1)
+				return false;
+
+			var segment = GetSegment(X, Y + 1);
+
+			if (Map.Tiles[Map.Rows[Y + 1].Segments[segment].Tile].Walk == -1)
+				return false;
+
+			Y++;
+			PositionChanged?.Invoke();
+
+			return true;
 		}
 
 		public static bool East()
 		{
+			if (X == 255)
+				return false;
+
+			var segment = GetSegment(X + 1, Y);
+
+			if (Map.Tiles[Map.Rows[Y].Segments[segment].Tile].Walk == -1)
+				return false;
+
+			X++;
+			PositionChanged?.Invoke();
+
+			return true;
 		}
 
 		public static bool West()
 		{
+			if (Y == 0)
+				return false;
+
+			var segment = GetSegment(X - 1, Y);
+
+			if (Map.Tiles[Map.Rows[Y].Segments[segment].Tile].Walk == -1)
+				return false;
+
+			X--;
+			PositionChanged?.Invoke();
+
+			return true;
 		}
 
 		public static void Update()
 		{
 			Rows = new MapSegment[Map.Rows.Length][];
 
-			var x = 0;
-
 			for (var row = 0; row < Rows.Length; row++)
 			{
+				var x = 0;
+
 				var segments = new List<MapSegment>();
 
 				for (var segment = 0; segment < Map.Rows[row].Segments.Length; segment++)

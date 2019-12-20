@@ -6,6 +6,25 @@ namespace ConsoleGame
 {
 	internal static class RpgMap
 	{
+		internal static void Enable()
+		{
+			RpgGame.PartyMap.PositionChanged += PartyMap_PositionChanged;
+
+			Map.X = RpgGame.PartyMap.X;
+			Map.Y = RpgGame.PartyMap.Y;
+		}
+
+		internal static void Disable()
+		{
+			RpgGame.PartyMap.PositionChanged -= PartyMap_PositionChanged;
+		}
+
+		private static void PartyMap_PositionChanged()
+		{
+			Map.X = RpgGame.PartyMap.X;
+			Map.Y = RpgGame.PartyMap.Y;
+		}
+
 		internal static void Update()
 		{
 			var zones = new List<Map.Zone>();
@@ -47,7 +66,7 @@ namespace ConsoleGame
 			new Tile { Character = '[',  Name = "Castle 2 - Top Left" },
 			new Tile { Character = ']',  Name = "Castle 2 - Top Right" },
 			new Tile { Character = 'i',  Name = "Tower of Illusion - Top" },
-			new Tile { Character = '`',  Name = "Grotto 1" },
+			new Tile { Character = '0',  Name = "Grotto 1" },
 			new Tile { Character = '=',  Name = "Dock - Vertical Left" },
 
 			new Tile { Character = '^',  Name = "Mountain - Top Left" },
@@ -78,23 +97,23 @@ namespace ConsoleGame
 			new Tile { Character = '.',  Name = "Grass - Top Left" },
 			new Tile { Character = '[',  Name = "Castle 2 - Bottom Left" },
 			new Tile { Character = ']',  Name = "Castle 2 - Bottom Right" },
-			new Tile { Character = '`',  Name = "Grotto 2" },
+			new Tile { Character = '0',  Name = "Grotto 2" },
 			new Tile { Character = '#',  Name = "Village Fence - Top Left" },
 			new Tile { Character = '#',  Name = "Village Fence - Top" },
 			new Tile { Character = '#',  Name = "Village Fence - Top Right" },
-			new Tile { Character = '`',  Name = "Grotto 3" },
+			new Tile { Character = '0',  Name = "Grotto 3" },
 
 			new Tile { Character = '^',  Name = "Mountain - Bottom Left" },
 			new Tile { Character = '^',  Name = "Mountain - Bottom" },
-			new Tile { Character = '`',  Name = "Grotto 4" },
+			new Tile { Character = '0',  Name = "Grotto 4" },
 			new Tile { Character = '^',  Name = "Mountain - Bottom Right" },
-			new Tile { Character = '`',  Name = "Grotto 5" },
-			new Tile { Character = '`',  Name = "Grotto 6" },
+			new Tile { Character = '0',  Name = "Grotto 5" },
+			new Tile { Character = '0',  Name = "Grotto 6" },
 			new Tile { Character = '~',  Name = "Desert" },
 			new Tile { Character = '~',  Name = "Desert" },
 			new Tile { Character = '[',  Name = "Castle 2 - Bottom Left" },
 			new Tile { Character = ']',  Name = "Castle 2 - Bottom Right" },
-			new Tile { Character = '`',  Name = "Grotto 7" },
+			new Tile { Character = '0',  Name = "Grotto 7" },
 			new Tile { Character = '#',  Name = "Village Fence - Top Left Exterior" },
 			new Tile { Character = '#',  Name = "Village Fence - Top Left Interior" },
 			new Tile { Character = '.',  Name = "Village Area (gray)" },

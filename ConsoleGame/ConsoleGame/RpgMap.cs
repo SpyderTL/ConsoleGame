@@ -59,7 +59,7 @@ namespace ConsoleGame
 			new Tile { Character = '!',  Name = "Forest - Top" },
 			new Tile { Character = '!',  Name = "Forest - Top Right" },
 			new Tile { Character = '.',  Name = "Grass - Bottom Right" },
-			new Tile { Character = '.',  Name = "Grass - Bottom" },
+			new Tile { Character = '\0',  Name = "Grass - Bottom" },
 			new Tile { Character = '.',  Name = "Grass - Bottom Left" },
 			new Tile { Character = '[',  Name = "Castle 1 - Top Left" },
 			new Tile { Character = ']',  Name = "Castle 1 - Top Right" },
@@ -75,9 +75,9 @@ namespace ConsoleGame
 			new Tile { Character = '!',  Name = "Forest - Left" },
 			new Tile { Character = '!',  Name = "Forest - Bottom" },
 			new Tile { Character = '!',  Name = "Forest - Right" },
-			new Tile { Character = '.',  Name = "Grass - Right" },
+			new Tile { Character = '\0',  Name = "Grass - Right" },
 			new Tile { Character = '\0',  Name = "Ocean" },
-			new Tile { Character = '.',  Name = "Grass - Left" },
+			new Tile { Character = '\0',  Name = "Grass - Left" },
 			new Tile { Character = '[',  Name = "Castle 1 - Middle Left" },
 			new Tile { Character = ']',  Name = "Castle 1 - Middle Right" },
 			new Tile { Character = '[',  Name = "Castle 2 - Bottom Left" },
@@ -93,7 +93,7 @@ namespace ConsoleGame
 			new Tile { Character = '!',  Name = "Forest - Bottom" },
 			new Tile { Character = '!',  Name = "Forest - Bottom Right" },
 			new Tile { Character = '.',  Name = "Grass - Top Right" },
-			new Tile { Character = '.',  Name = "Grass - Top" },
+			new Tile { Character = '\0',  Name = "Grass - Top" },
 			new Tile { Character = '.',  Name = "Grass - Top Left" },
 			new Tile { Character = '[',  Name = "Castle 2 - Bottom Left" },
 			new Tile { Character = ']',  Name = "Castle 2 - Bottom Right" },
@@ -187,8 +187,6 @@ namespace ConsoleGame
 			new Tile { Character = '#',  Name = "Village Wall 2" },
 			new Tile { Character = '#',  Name = "Village Wall 3" },
 			new Tile { Character = '#',  Name = "Village Fence - Bottom Right" },
-			//new Tile { Character = '\0',  Name = "Ocean" },
-			//new Tile { Character = '\0',  Name = "Unknown" },
 		};
 	}
 }

@@ -10,8 +10,8 @@ namespace ConsoleGame
 		{
 			RpgGame.PartyWorld.PositionChanged += PartyMap_PositionChanged;
 
-			Map.X = RpgGame.PartyMap.X;
-			Map.Y = RpgGame.PartyMap.Y;
+			Party.X = RpgGame.PartyMap.X;
+			Party.Y = RpgGame.PartyMap.Y;
 		}
 
 		internal static void Disable()
@@ -21,8 +21,8 @@ namespace ConsoleGame
 
 		private static void PartyMap_PositionChanged()
 		{
-			Map.X = RpgGame.PartyMap.X;
-			Map.Y = RpgGame.PartyMap.Y;
+			Party.X = RpgGame.PartyMap.X;
+			Party.Y = RpgGame.PartyMap.Y;
 		}
 
 		internal static void Load()

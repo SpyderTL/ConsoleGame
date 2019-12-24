@@ -11,16 +11,35 @@ namespace RpgGame
 		{
 			using (var reader = Data.Reader())
 			{
+				// Load Tiles
+				reader.BaseStream.Position = Data.Address(0, 0x8000);
+
+				for (var tile = 0; tile < 128; tile++)
+				{
+					var value = reader.ReadByte();
+					var value2 = reader.ReadByte();
+
+					World.Tiles[tile] = new World.Tile
+					{
+						Blocked = (value & 0x01) == 0x01,
+						TileType = (World.TileType)((value >> 1) & 0x0f),
+						TeleportType = (World.TeleportType)(value >> 6),
+						Battle = (value & 0x20) == 0x20,
+						Value = value2
+					};
+				}
+
+				// Load Segments
 				reader.BaseStream.Position = Data.Address(1, 0x8000);
 
 				World.Rows = new World.Row[256];
 
 				var rows = new int[256];
 
-				for (int row = 0; row < 256; row++)
+				for (var row = 0; row < 256; row++)
 					rows[row] = reader.ReadUInt16();
 
-				for (int row = 0; row < 256; row++)
+				for (var row = 0; row < 256; row++)
 				{
 					reader.BaseStream.Position = Data.Address(1, rows[row]);
 

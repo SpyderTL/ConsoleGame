@@ -3,14 +3,12 @@ using System.Threading;
 
 namespace ConsoleGame
 {
-	internal static class RpgWorldScreen
+	internal static class MapScreen
 	{
 		private static AutoResetEvent Close = new AutoResetEvent(false);
 
 		internal static void Show()
 		{
-			RpgGame.PartyWorld.PositionChanged += Map_PositionChanged;
-
 			Draw();
 
 			Close.WaitOne();
@@ -30,10 +28,10 @@ namespace ConsoleGame
 
 						for (var z = 1; z < Map.Zones.Length; z++)
 						{
-							if (Map.Zones[z].Left <= x + Map.X - 20 &&
-								Map.Zones[z].Right >= x + Map.X - 20 &&
-								Map.Zones[z].Top <= y + Map.Y - 10 &&
-								Map.Zones[z].Bottom >= y + Map.Y - 10)
+							if (Map.Zones[z].Left <= x + Party.X - 20 &&
+								Map.Zones[z].Right >= x + Party.X - 20 &&
+								Map.Zones[z].Top <= y + Party.Y - 10 &&
+								Map.Zones[z].Bottom >= y + Party.Y - 10)
 								zone = z;
 						}
 
@@ -73,11 +71,6 @@ namespace ConsoleGame
 			}
 
 			Screen.Update();
-		}
-
-		private static void Map_PositionChanged()
-		{
-			Draw();
 		}
 	}
 }

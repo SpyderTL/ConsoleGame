@@ -6,6 +6,8 @@ namespace ConsoleGame
 {
 	internal static class Party
 	{
+		internal static int X;
+		internal static int Y;
 		internal static Character[] Characters = new Character[4];
 
 		internal class Character

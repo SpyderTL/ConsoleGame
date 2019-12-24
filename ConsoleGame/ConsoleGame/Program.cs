@@ -118,7 +118,7 @@ namespace ConsoleGame
 						InputRpgWorld.Enable();
 						RpgWorld.Enable();
 
-						RpgWorldScreen.Show();
+						MapScreen.Show();
 
 						RpgWorld.Disable();
 						InputRpgWorld.Disable();

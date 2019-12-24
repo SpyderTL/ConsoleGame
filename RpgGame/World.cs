@@ -6,6 +6,7 @@ namespace RpgGame
 {
 	public static class World
 	{
+		public static Tile[] Tiles = new Tile[128];
 		public static Row[] Rows;
 			
 		public struct Row
@@ -21,150 +22,39 @@ namespace RpgGame
 
 		public struct Tile
 		{
-			public string Name;
-			public int Walk;
-			public int Fly;
-			public int Sail;
-			public bool Dock;
+			public TileType TileType;
+			public bool Blocked;
+			public bool Battle;
+			public TeleportType TeleportType;
+			public int Value;
 		}
 
-		public static Tile[] Tiles = new Tile[]
+		public enum TileType
 		{
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = -1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = -1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = -1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
+			Normal,
+			Door,
+			Locked,
+			CloseRoom,
+			Treasure,
+			Battle,
+			Damage,
+			Crown,
+			Cube,
+			FourOrbs,
+			UseRod,
+			UseLute,
+			EarthOrb,
+			FireOrb,
+			WaterOrb,
+			AirOrb
+		}
 
-			new Tile { Walk = -1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = -1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = -1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = -1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = -1, Fly = 1, Sail = 1, Name = "" },
-			new Tile { Walk = -1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = -1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = -1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-
-			new Tile { Walk = -1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = -1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = -1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = -1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = -1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = -1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = -1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-
-			new Tile { Walk = -1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = -1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = -1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = -1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = -1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = -1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = -1, Fly = 1, Sail = -1, Name = "" },
-
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = -1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = -1, Fly = 1, Sail = -1, Name = "" },
-
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = -1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = -1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = -1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = -1, Fly = 1, Sail = -1, Name = "" },
-
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = -1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = -1, Fly = 1, Sail = -1, Name = "" },
-
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = 1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = -1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = -1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = -1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = -1, Fly = 1, Sail = -1, Name = "" },
-			new Tile { Walk = -1, Fly = 1, Sail = -1, Name = "" }
-		};
+		public enum TeleportType
+		{
+			None,
+			Warp,
+			Normal,
+			Exit
+		}
 	}
 }

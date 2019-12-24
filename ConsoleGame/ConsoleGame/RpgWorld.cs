@@ -8,21 +8,23 @@ namespace ConsoleGame
 	{
 		internal static void Enable()
 		{
-			RpgGame.PartyWorld.PositionChanged += PartyMap_PositionChanged;
+			RpgGame.PartyWorld.PositionChanged += PartyWorld_PositionChanged;
 
-			Map.X = RpgGame.PartyWorld.X;
-			Map.Y = RpgGame.PartyWorld.Y;
+			Party.X = RpgGame.PartyWorld.X;
+			Party.Y = RpgGame.PartyWorld.Y;
 		}
 
 		internal static void Disable()
 		{
-			RpgGame.PartyWorld.PositionChanged -= PartyMap_PositionChanged;
+			RpgGame.PartyWorld.PositionChanged -= PartyWorld_PositionChanged;
 		}
 
-		private static void PartyMap_PositionChanged()
+		private static void PartyWorld_PositionChanged()
 		{
-			Map.X = RpgGame.PartyWorld.X;
-			Map.Y = RpgGame.PartyWorld.Y;
+			Party.X = RpgGame.PartyWorld.X;
+			Party.Y = RpgGame.PartyWorld.Y;
+
+			MapScreen.Draw();
 		}
 
 		internal static void Load()
@@ -125,11 +127,11 @@ namespace ConsoleGame
 			new Tile { Character = '[',  Name = "Castle 2 - Bottom Left" },
 			new Tile { Character = ']',  Name = "Castle 2 - Bottom Right" },
 			new Tile { Character = 'O',  Name = "Grotto 7" },
-			new Tile { Character = '#',  Name = "Village Fence - Top Left Exterior" },
+			new Tile { Character = '.',  Name = "Village Fence - Top Left Exterior" },
 			new Tile { Character = '#',  Name = "Village Fence - Top Left Interior" },
 			new Tile { Character = '.',  Name = "Village Area (gray)" },
 			new Tile { Character = '#',  Name = "Village Fence - Top Right Interior" },
-			new Tile { Character = '#',  Name = "Village Fence - Top Right Exterior" },
+			new Tile { Character = '.',  Name = "Village Fence - Top Right Exterior" },
 
 			new Tile { Character = '\0',  Name = "River - Top Left" },
 			new Tile { Character = '\0',  Name = "River - Top Right" },

@@ -6,6 +6,7 @@ namespace RpgGame
 {
 	public static class Map
 	{
+		public static Tile[] Tiles = new Tile[128];
 		public static Segment[] Segments;
 
 		public struct Segment
@@ -21,8 +22,9 @@ namespace RpgGame
 			public int Fly;
 			public int Sail;
 			public bool Dock;
+			public int PortalMap;
+			public int PortalX;
+			public int PortalY;
 		}
-
-		public static Tile[] Tiles = new Tile[128];
 	}
 }

@@ -21,7 +21,7 @@ namespace RpgGame
 
 			var segment = GetSegment(X, Y - 1);
 
-			if (World.Tiles[World.Rows[Y - 1].Segments[segment].Tile].Walk == -1)
+			if (World.Tiles[World.Rows[Y - 1].Segments[segment].Tile].Blocked)
 				return false;
 
 			Y--;
@@ -37,7 +37,7 @@ namespace RpgGame
 
 			var segment = GetSegment(X, Y + 1);
 
-			if (World.Tiles[World.Rows[Y + 1].Segments[segment].Tile].Walk == -1)
+			if (World.Tiles[World.Rows[Y + 1].Segments[segment].Tile].Blocked)
 				return false;
 
 			Y++;
@@ -53,7 +53,7 @@ namespace RpgGame
 
 			var segment = GetSegment(X + 1, Y);
 
-			if (World.Tiles[World.Rows[Y].Segments[segment].Tile].Walk == -1)
+			if (World.Tiles[World.Rows[Y].Segments[segment].Tile].Blocked)
 				return false;
 
 			X++;
@@ -69,7 +69,7 @@ namespace RpgGame
 
 			var segment = GetSegment(X - 1, Y);
 
-			if (World.Tiles[World.Rows[Y].Segments[segment].Tile].Walk == -1)
+			if (World.Tiles[World.Rows[Y].Segments[segment].Tile].Blocked)
 				return false;
 
 			X--;

@@ -31,7 +31,7 @@ namespace RpgGame
 						count = reader.ReadByte();
 
 						if (count == 0)
-							count = 255;
+							count = 256;
 					}
 
 					segments.Add(new Map.Segment { Tile = value, Count = count });

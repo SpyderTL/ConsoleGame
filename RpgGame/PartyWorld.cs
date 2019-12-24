@@ -4,7 +4,7 @@ using System.Text;
 
 namespace RpgGame
 {
-	public static class PartyMap
+	public static class PartyWorld
 	{
 		public static int X;
 		public static int Y;
@@ -21,8 +21,8 @@ namespace RpgGame
 
 			var segment = GetSegment(X, Y - 1);
 
-			if (Map.Tiles[Rows[Y - 1][segment].Tile].Walk == -1)
-				return false;
+			//if (World.Tiles[World.Rows[Y - 1].Segments[segment].Tile].Walk == -1)
+			//	return false;
 
 			Y--;
 			PositionChanged?.Invoke();
@@ -37,8 +37,8 @@ namespace RpgGame
 
 			var segment = GetSegment(X, Y + 1);
 
-			if (Map.Tiles[Rows[Y + 1][segment].Tile].Walk == -1)
-				return false;
+			//if (World.Tiles[World.Rows[Y + 1].Segments[segment].Tile].Walk == -1)
+			//	return false;
 
 			Y++;
 			PositionChanged?.Invoke();
@@ -53,8 +53,8 @@ namespace RpgGame
 
 			var segment = GetSegment(X + 1, Y);
 
-			if (Map.Tiles[Rows[Y][segment].Tile].Walk == -1)
-				return false;
+			//if (World.Tiles[World.Rows[Y].Segments[segment].Tile].Walk == -1)
+			//	return false;
 
 			X++;
 			PositionChanged?.Invoke();
@@ -69,8 +69,8 @@ namespace RpgGame
 
 			var segment = GetSegment(X - 1, Y);
 
-			if (Map.Tiles[Rows[Y][segment].Tile].Walk == -1)
-				return false;
+			//if (World.Tiles[World.Rows[Y].Segments[segment].Tile].Walk == -1)
+			//	return false;
 
 			X--;
 			PositionChanged?.Invoke();
@@ -80,39 +80,29 @@ namespace RpgGame
 
 		public static void Update()
 		{
-			Rows = new MapSegment[64][];
+			Rows = new MapSegment[World.Rows.Length][];
 
-			var y = 0;
-			var left = 0;
-
-			var segments = new List<MapSegment>();
-
-			for (var segment = 0; segment < Map.Segments.Length; segment++)
+			for (var row = 0; row < Rows.Length; row++)
 			{
-				var tile = Map.Segments[segment].Tile;
-				var right = left + Map.Segments[segment].Repeat;
+				var x = 0;
 
-				while (right > 63)
+				var segments = new List<MapSegment>();
+
+				for (var segment = 0; segment < World.Rows[row].Segments.Length; segment++)
 				{
-					segments.Add(new MapSegment { Left = left, Right = 63, Tile = tile });
+					var repeat = World.Rows[row].Segments[segment].Repeat;
 
-					Rows[y] = segments.ToArray();
+					segments.Add(new MapSegment
+					{
+						Left = x,
+						Right = x + repeat,
+						Tile = World.Rows[row].Segments[segment].Tile
+					});
 
-					right -= 64;
-					left = 0;
-					y++;
+					x += (repeat + 1);
 				}
 
-				segments.Add(new MapSegment { Left = left, Right = right, Tile = tile });
-
-				if (right == 63)
-				{
-					Rows[y] = segments.ToArray();
-
-					left = 0;
-					right = 0;
-					y++;
-				}
+				Rows[row] = segments.ToArray();
 			}
 		}
 

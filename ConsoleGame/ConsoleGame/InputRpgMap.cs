@@ -2,7 +2,7 @@
 
 namespace ConsoleGame
 {
-	internal static class InputRpgMap
+	internal static class InputRpgWorld
 	{
 		internal static void Enable()
 		{
@@ -19,19 +19,19 @@ namespace ConsoleGame
 			switch (button)
 			{
 				case Input.Button.Up:
-					RpgGame.PartyMap.North();
+					RpgGame.PartyWorld.North();
 					break;
 
 				case Input.Button.Down:
-					RpgGame.PartyMap.South();
+					RpgGame.PartyWorld.South();
 					break;
 
 				case Input.Button.Left:
-					RpgGame.PartyMap.West();
+					RpgGame.PartyWorld.West();
 					break;
 
 				case Input.Button.Right:
-					RpgGame.PartyMap.East();
+					RpgGame.PartyWorld.East();
 					break;
 			}
 		}

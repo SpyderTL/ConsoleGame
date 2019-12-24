@@ -63,9 +63,9 @@ namespace RpgGame.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] data {
+        internal static byte[] ROM {
             get {
-                object obj = ResourceManager.GetObject("data", resourceCulture);
+                object obj = ResourceManager.GetObject("ROM", resourceCulture);
                 return ((byte[])(obj));
             }
         }

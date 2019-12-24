@@ -13,43 +13,31 @@ namespace RpgGame
 			{
 				reader.BaseStream.Position = Data.Address(bank, offset);
 
-				Map.Rows = new Map.Row[256];
+				var segments = new List<Map.Segment>();
 
-				var rows = new int[256];
-
-				for (int row = 0; row < 256; row++)
-					rows[row] = reader.ReadUInt16();
-
-				for (int row = 0; row < 256; row++)
+				while (true)
 				{
-					reader.BaseStream.Position = Data.Address(bank, rows[row] - 0x8000);
+					var value = reader.ReadByte();
 
-					var segments = new List<Map.Segment>();
+					if (value == 0xff)
+						break;
 
-					while (true)
+					var repeat = 0;
+
+					if ((value & 0x80) == 0x80)
 					{
-						var value = reader.ReadByte();
+						value &= 0x7f;
 
-						if (value == 0xff)
-							break;
+						repeat = reader.ReadByte();
 
-						var width = 1;
-
-						if ((value & 0x80) == 0x80)
-						{
-							value &= 0x7f;
-
-							width = reader.ReadByte();
-
-							if (width == 0)
-								width = 256;
-						}
-
-						segments.Add(new Map.Segment { Tile = value, Width = width });
+						if (repeat == 0)
+							repeat = 255;
 					}
 
-					Map.Rows[row].Segments = segments.ToArray();
+					segments.Add(new Map.Segment { Tile = value, Repeat = repeat });
 				}
+
+				Map.Segments = segments.ToArray();
 			}
 		}
 	}

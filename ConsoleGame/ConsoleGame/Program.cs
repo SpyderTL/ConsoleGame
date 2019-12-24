@@ -106,22 +106,22 @@ namespace ConsoleGame
 						Party.Characters[2] = new Party.Character { Name = "Gamma", Health = 54, MaxHealth = 102, Power = 12, MaxPower = 88 };
 						Party.Characters[3] = new Party.Character { Name = "Delta", Health = 54, MaxHealth = 102, Power = 12, MaxPower = 88 };
 
-						RpgGame.PartyMap.X = 153;
-						RpgGame.PartyMap.Y = 165;
+						RpgGame.PartyWorld.X = 153;
+						RpgGame.PartyWorld.Y = 165;
 
-						RpgGame.DataMap.Load(1, 0x0000);
+						RpgGame.DataWorld.Load();
 
-						RpgMap.Update();
+						RpgGame.PartyWorld.Update();
 
-						RpgGame.PartyMap.Update();
+						RpgWorld.Load();
 
-						InputRpgMap.Enable();
-						RpgMap.Enable();
+						InputRpgWorld.Enable();
+						RpgWorld.Enable();
 
-						RpgMapScreen.Show();
+						RpgWorldScreen.Show();
 
-						RpgMap.Disable();
-						InputRpgMap.Disable();
+						RpgWorld.Disable();
+						InputRpgWorld.Disable();
 						break;
 
 					default:

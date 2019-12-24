@@ -4,28 +4,43 @@ using System.Text;
 
 namespace ConsoleGame
 {
-	internal static class RpgMap
+	internal static class RpgWorld
 	{
 		internal static void Enable()
 		{
 			RpgGame.PartyWorld.PositionChanged += PartyMap_PositionChanged;
 
-			Map.X = RpgGame.PartyMap.X;
-			Map.Y = RpgGame.PartyMap.Y;
+			Map.X = RpgGame.PartyWorld.X;
+			Map.Y = RpgGame.PartyWorld.Y;
 		}
 
 		internal static void Disable()
 		{
-			RpgGame.PartyMap.PositionChanged -= PartyMap_PositionChanged;
+			RpgGame.PartyWorld.PositionChanged -= PartyMap_PositionChanged;
 		}
 
 		private static void PartyMap_PositionChanged()
 		{
-			Map.X = RpgGame.PartyMap.X;
-			Map.Y = RpgGame.PartyMap.Y;
+			Map.X = RpgGame.PartyWorld.X;
+			Map.Y = RpgGame.PartyWorld.Y;
 		}
 
 		internal static void Load()
+		{
+			var zones = new List<Map.Zone>();
+
+			for (var row = 0; row < RpgGame.PartyWorld.Rows.Length; row++)
+			{
+				foreach (var segment in RpgGame.PartyWorld.Rows[row])
+				{
+					zones.Add(new Map.Zone { Top = row, Left = segment.Left, Bottom = row, Right = segment.Right, Character = Tiles[segment.Tile].Character, Description = Tiles[segment.Tile].Name });
+				}
+			}
+
+			Map.Zones = zones.ToArray();
+		}
+
+		internal static void LoadMap()
 		{
 			var zones = new List<Map.Zone>();
 

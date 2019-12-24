@@ -5,11 +5,11 @@ namespace RpgGame
 {
 	internal static class Data
 	{
-		internal static byte[] Rom = Properties.Resources.data;
+		internal static byte[] Rom = Properties.Resources.ROM;
 
-		internal static int Address(int bank, int offset)
+		internal static int Address(int bank, int address)
 		{
-			return (bank * 0x4000) + offset;
+			return (bank * 0x4000) + address - 0x8000;
 		}
 
 		internal static BinaryReader Reader()

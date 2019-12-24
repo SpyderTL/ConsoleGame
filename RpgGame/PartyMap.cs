@@ -90,7 +90,7 @@ namespace RpgGame
 			for (var segment = 0; segment < Map.Segments.Length; segment++)
 			{
 				var tile = Map.Segments[segment].Tile;
-				var right = left + Map.Segments[segment].Repeat;
+				var right = left + Map.Segments[segment].Count - 1;
 
 				while (right > 63)
 				{

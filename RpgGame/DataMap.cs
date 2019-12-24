@@ -22,19 +22,19 @@ namespace RpgGame
 					if (value == 0xff)
 						break;
 
-					var repeat = 0;
+					var count = 1;
 
 					if ((value & 0x80) == 0x80)
 					{
 						value &= 0x7f;
 
-						repeat = reader.ReadByte();
+						count = reader.ReadByte();
 
-						if (repeat == 0)
-							repeat = 255;
+						if (count == 0)
+							count = 255;
 					}
 
-					segments.Add(new Map.Segment { Tile = value, Repeat = repeat });
+					segments.Add(new Map.Segment { Tile = value, Count = count });
 				}
 
 				Map.Segments = segments.ToArray();

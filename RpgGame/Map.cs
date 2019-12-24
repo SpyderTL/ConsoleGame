@@ -11,7 +11,7 @@ namespace RpgGame
 		public struct Segment
 		{
 			public int Tile;
-			public int Repeat;
+			public int Count;
 		}
 
 		public struct Tile

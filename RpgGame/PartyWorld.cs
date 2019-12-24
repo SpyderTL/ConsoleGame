@@ -21,8 +21,8 @@ namespace RpgGame
 
 			var segment = GetSegment(X, Y - 1);
 
-			//if (World.Tiles[World.Rows[Y - 1].Segments[segment].Tile].Walk == -1)
-			//	return false;
+			if (World.Tiles[World.Rows[Y - 1].Segments[segment].Tile].Walk == -1)
+				return false;
 
 			Y--;
 			PositionChanged?.Invoke();
@@ -37,8 +37,8 @@ namespace RpgGame
 
 			var segment = GetSegment(X, Y + 1);
 
-			//if (World.Tiles[World.Rows[Y + 1].Segments[segment].Tile].Walk == -1)
-			//	return false;
+			if (World.Tiles[World.Rows[Y + 1].Segments[segment].Tile].Walk == -1)
+				return false;
 
 			Y++;
 			PositionChanged?.Invoke();
@@ -53,8 +53,8 @@ namespace RpgGame
 
 			var segment = GetSegment(X + 1, Y);
 
-			//if (World.Tiles[World.Rows[Y].Segments[segment].Tile].Walk == -1)
-			//	return false;
+			if (World.Tiles[World.Rows[Y].Segments[segment].Tile].Walk == -1)
+				return false;
 
 			X++;
 			PositionChanged?.Invoke();
@@ -69,8 +69,8 @@ namespace RpgGame
 
 			var segment = GetSegment(X - 1, Y);
 
-			//if (World.Tiles[World.Rows[Y].Segments[segment].Tile].Walk == -1)
-			//	return false;
+			if (World.Tiles[World.Rows[Y].Segments[segment].Tile].Walk == -1)
+				return false;
 
 			X--;
 			PositionChanged?.Invoke();
@@ -90,16 +90,16 @@ namespace RpgGame
 
 				for (var segment = 0; segment < World.Rows[row].Segments.Length; segment++)
 				{
-					var repeat = World.Rows[row].Segments[segment].Repeat;
+					var count = World.Rows[row].Segments[segment].Count;
 
 					segments.Add(new MapSegment
 					{
 						Left = x,
-						Right = x + repeat,
+						Right = x + count - 1,
 						Tile = World.Rows[row].Segments[segment].Tile
 					});
 
-					x += (repeat + 1);
+					x += count;
 				}
 
 				Rows[row] = segments.ToArray();

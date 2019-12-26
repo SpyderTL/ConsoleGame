@@ -17,6 +17,7 @@ namespace ConsoleGame
 			Host,
 			Join,
 			World,
+			Map,
 			Battle
 		}
 	}

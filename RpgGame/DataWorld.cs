@@ -21,13 +21,30 @@ namespace RpgGame
 
 					World.Tiles[tile] = new World.Tile
 					{
-						Blocked = (value & 0x01) == 0x01,
-						TileType = (World.TileType)((value >> 1) & 0x0f),
-						TeleportType = (World.TeleportType)(value >> 6),
-						Battle = (value & 0x20) == 0x20,
-						Value = value2
+						Forest = (value & 0x10) == 0x10,
+						Dock = (value & 0x20) == 0x20,
+						Type = (World.TileType)(value >> 6),
+						Teleport = (value2 & 0x80) == 0x80,
+						Battle = (value2 & 0x40) == 0x40,
+						Value = value2 & 0x3f
 					};
 				}
+
+				// Load Teleports
+				reader.BaseStream.Position = Data.Address(0, 0xAC40);
+
+				for (var teleport = 0; teleport < 32; teleport++)
+					World.Teleports[teleport].Map = reader.ReadByte();
+
+				reader.BaseStream.Position = Data.Address(0, 0xAC00);
+
+				for (var teleport = 0; teleport < 32; teleport++)
+					World.Teleports[teleport].X = reader.ReadByte();
+
+				reader.BaseStream.Position = Data.Address(0, 0xAC20);
+
+				for (var teleport = 0; teleport < 32; teleport++)
+					World.Teleports[teleport].Y = reader.ReadByte();
 
 				// Load Segments
 				reader.BaseStream.Position = Data.Address(1, 0x8000);

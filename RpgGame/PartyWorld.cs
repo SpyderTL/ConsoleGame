@@ -13,6 +13,7 @@ namespace RpgGame
 		public static MapSegment[][] Rows;
 
 		public static event Action PositionChanged;
+		public static event Action MapChanged;
 
 		public static bool North()
 		{
@@ -21,11 +22,22 @@ namespace RpgGame
 
 			var segment = GetSegment(X, Y - 1);
 
-			if (World.Tiles[World.Rows[Y - 1].Segments[segment].Tile].Blocked)
-				return false;
+			//if (World.Tiles[World.Rows[Y - 1].Segments[segment].Tile].Blocked)
+			//	return false;
 
 			Y--;
 			PositionChanged?.Invoke();
+
+			if (World.Tiles[World.Rows[Y].Segments[segment].Tile].Teleport)
+			{
+				var teleport = World.Tiles[World.Rows[Y].Segments[segment].Tile].Value;
+
+				DataMap.Load(World.Teleports[teleport].Map);
+				PartyMap.X = World.Teleports[teleport].X;
+				PartyMap.Y = World.Teleports[teleport].Y;
+
+				MapChanged?.Invoke();
+			}
 
 			return true;
 		}
@@ -37,11 +49,22 @@ namespace RpgGame
 
 			var segment = GetSegment(X, Y + 1);
 
-			if (World.Tiles[World.Rows[Y + 1].Segments[segment].Tile].Blocked)
-				return false;
+			//if (World.Tiles[World.Rows[Y + 1].Segments[segment].Tile].Blocked)
+			//	return false;
 
 			Y++;
 			PositionChanged?.Invoke();
+
+			if (World.Tiles[World.Rows[Y].Segments[segment].Tile].Teleport)
+			{
+				var teleport = World.Tiles[World.Rows[Y].Segments[segment].Tile].Value;
+
+				DataMap.Load(World.Teleports[teleport].Map);
+				PartyMap.X = World.Teleports[teleport].X;
+				PartyMap.Y = World.Teleports[teleport].Y;
+
+				MapChanged?.Invoke();
+			}
 
 			return true;
 		}
@@ -53,11 +76,22 @@ namespace RpgGame
 
 			var segment = GetSegment(X + 1, Y);
 
-			if (World.Tiles[World.Rows[Y].Segments[segment].Tile].Blocked)
-				return false;
+			//if (World.Tiles[World.Rows[Y].Segments[segment].Tile].Blocked)
+			//	return false;
 
 			X++;
 			PositionChanged?.Invoke();
+
+			if (World.Tiles[World.Rows[Y].Segments[segment].Tile].Teleport)
+			{
+				var teleport = World.Tiles[World.Rows[Y].Segments[segment].Tile].Value;
+
+				DataMap.Load(World.Teleports[teleport].Map);
+				PartyMap.X = World.Teleports[teleport].X;
+				PartyMap.Y = World.Teleports[teleport].Y;
+
+				MapChanged?.Invoke();
+			}
 
 			return true;
 		}
@@ -69,11 +103,22 @@ namespace RpgGame
 
 			var segment = GetSegment(X - 1, Y);
 
-			if (World.Tiles[World.Rows[Y].Segments[segment].Tile].Blocked)
-				return false;
+			//if (World.Tiles[World.Rows[Y].Segments[segment].Tile].Blocked)
+			//	return false;
 
 			X--;
 			PositionChanged?.Invoke();
+
+			if (World.Tiles[World.Rows[Y].Segments[segment].Tile].Teleport)
+			{
+				var teleport = World.Tiles[World.Rows[Y].Segments[segment].Tile].Value;
+
+				DataMap.Load(World.Teleports[teleport].Map);
+				PartyMap.X = World.Teleports[teleport].X;
+				PartyMap.Y = World.Teleports[teleport].Y;
+
+				MapChanged?.Invoke();
+			}
 
 			return true;
 		}

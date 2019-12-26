@@ -65,6 +65,16 @@ namespace ConsoleGame
 						{
 							case 0:
 								// World
+								Party.Characters[0] = new Party.Character { Name = "Alpha", Health = 54, MaxHealth = 102, Power = 12, MaxPower = 88 };
+								Party.Characters[1] = new Party.Character { Name = "Beta", Health = 54, MaxHealth = 102, Power = 12, MaxPower = 88 };
+								Party.Characters[2] = new Party.Character { Name = "Gamma", Health = 54, MaxHealth = 102, Power = 12, MaxPower = 88 };
+								Party.Characters[3] = new Party.Character { Name = "Delta", Health = 54, MaxHealth = 102, Power = 12, MaxPower = 88 };
+
+								RpgGame.PartyWorld.X = 153;
+								RpgGame.PartyWorld.Y = 165;
+
+								RpgGame.DataWorld.Load();
+
 								Game.Mode = Game.GameMode.World;
 								break;
 
@@ -101,16 +111,6 @@ namespace ConsoleGame
 						break;
 
 					case Game.GameMode.World:
-						Party.Characters[0] = new Party.Character { Name = "Alpha", Health = 54, MaxHealth = 102, Power = 12, MaxPower = 88 };
-						Party.Characters[1] = new Party.Character { Name = "Beta", Health = 54, MaxHealth = 102, Power = 12, MaxPower = 88 };
-						Party.Characters[2] = new Party.Character { Name = "Gamma", Health = 54, MaxHealth = 102, Power = 12, MaxPower = 88 };
-						Party.Characters[3] = new Party.Character { Name = "Delta", Health = 54, MaxHealth = 102, Power = 12, MaxPower = 88 };
-
-						RpgGame.PartyWorld.X = 153;
-						RpgGame.PartyWorld.Y = 165;
-
-						RpgGame.DataWorld.Load();
-
 						RpgGame.PartyWorld.Update();
 
 						RpgWorld.Load();
@@ -122,6 +122,20 @@ namespace ConsoleGame
 
 						RpgWorld.Disable();
 						InputRpgWorld.Disable();
+						break;
+
+					case Game.GameMode.Map:
+						RpgGame.PartyMap.Update();
+
+						RpgMap.Load();
+
+						InputRpgMap.Enable();
+						RpgMap.Enable();
+
+						MapScreen.Show();
+
+						RpgMap.Disable();
+						InputRpgMap.Disable();
 						break;
 
 					default:

@@ -7,6 +7,7 @@ namespace RpgGame
 	public static class World
 	{
 		public static Tile[] Tiles = new Tile[128];
+		public static Teleport[] Teleports = new Teleport[32];
 		public static Row[] Rows;
 			
 		public struct Row
@@ -22,39 +23,27 @@ namespace RpgGame
 
 		public struct Tile
 		{
-			public TileType TileType;
-			public bool Blocked;
+			public bool Dock;
+			public bool Forest;
+			public TileType Type;
+			public bool Teleport;
 			public bool Battle;
-			public TeleportType TeleportType;
 			public int Value;
 		}
 
 		public enum TileType
 		{
 			Normal,
-			Door,
-			Locked,
-			CloseRoom,
-			Treasure,
-			Battle,
-			Damage,
-			Crown,
-			Cube,
-			FourOrbs,
-			UseRod,
-			UseLute,
-			EarthOrb,
-			FireOrb,
-			WaterOrb,
-			AirOrb
+			Chime,
+			Caravan,
+			Floater
 		}
 
-		public enum TeleportType
+		public struct Teleport
 		{
-			None,
-			Warp,
-			Normal,
-			Exit
+			public int Map;
+			public int X;
+			public int Y;
 		}
 	}
 }

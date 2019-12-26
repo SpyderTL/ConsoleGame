@@ -8,7 +8,7 @@ namespace RpgGame
 	{
 		public static int X;
 		public static int Y;
-		public static int Segment;
+		//public static int Segment;
 
 		public static MapSegment[][] Rows;
 
@@ -113,6 +113,8 @@ namespace RpgGame
 					right = 0;
 					y++;
 				}
+				else
+					left = right + 1;
 			}
 		}
 

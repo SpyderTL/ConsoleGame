@@ -8,7 +8,7 @@ namespace ConsoleGame
 	{
 		internal static void Enable()
 		{
-			RpgGame.PartyWorld.PositionChanged += PartyMap_PositionChanged;
+			RpgGame.PartyMap.PositionChanged += PartyMap_PositionChanged;
 
 			Party.X = RpgGame.PartyMap.X;
 			Party.Y = RpgGame.PartyMap.Y;
@@ -23,6 +23,8 @@ namespace ConsoleGame
 		{
 			Party.X = RpgGame.PartyMap.X;
 			Party.Y = RpgGame.PartyMap.Y;
+
+			MapScreen.Draw();
 		}
 
 		internal static void Load()

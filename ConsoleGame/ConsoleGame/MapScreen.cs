@@ -14,6 +14,11 @@ namespace ConsoleGame
 			Close.WaitOne();
 		}
 
+		internal static void Hide()
+		{
+			Close.Set();
+		}
+
 		internal static void Draw()
 		{
 			Screen.Clear();

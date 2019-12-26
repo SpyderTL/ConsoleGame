@@ -7,10 +7,17 @@ namespace RpgGame
 {
 	public static class DataMap
 	{
-		public static void Load(int bank, int offset)
+		public static void Load(int map)
 		{
 			using (var reader = Data.Reader())
 			{
+				reader.BaseStream.Position = Data.Address(4, 0x8000 + (map >> 1));
+
+				var address = reader.ReadUInt16();
+
+				var bank = 4 + (address >> 14);
+				var offset = 0x8000 + (address & 0x3fff);
+
 				reader.BaseStream.Position = Data.Address(bank, offset);
 
 				var segments = new List<Map.Segment>();

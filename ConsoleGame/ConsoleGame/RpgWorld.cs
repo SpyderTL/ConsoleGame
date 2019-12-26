@@ -9,9 +9,17 @@ namespace ConsoleGame
 		internal static void Enable()
 		{
 			RpgGame.PartyWorld.PositionChanged += PartyWorld_PositionChanged;
+			RpgGame.PartyWorld.MapChanged += PartyWorld_MapChanged;
 
 			Party.X = RpgGame.PartyWorld.X;
 			Party.Y = RpgGame.PartyWorld.Y;
+		}
+
+		private static void PartyWorld_MapChanged()
+		{
+			Game.Mode = Game.GameMode.Map;
+
+			MapScreen.Hide();
 		}
 
 		internal static void Disable()

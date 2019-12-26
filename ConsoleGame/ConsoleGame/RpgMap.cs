@@ -63,6 +63,11 @@ namespace ConsoleGame
 						Tiles[tile].Character = '\\';
 						break;
 
+					case RpgGame.Map.TeleportType.Exit:
+						Tiles[tile].Name = "Exit";
+						Tiles[tile].Character = 'O';
+						break;
+
 					default:
 						switch (RpgGame.Map.Tiles[tile].TileType)
 						{
@@ -89,7 +94,7 @@ namespace ConsoleGame
 								}
 								else
 								{
-									Tiles[tile].Name = "Open";
+									Tiles[tile].Name = string.Empty;
 									Tiles[tile].Character = '.';
 								}
 								break;

@@ -7,6 +7,7 @@ namespace RpgGame
 	public static class Map
 	{
 		public static Tile[] Tiles = new Tile[128];
+		public static Teleport[] Teleports = new Teleport[64];
 		public static Segment[] Segments;
 
 		public struct Segment
@@ -50,6 +51,13 @@ namespace RpgGame
 			Warp,
 			Normal,
 			Exit
+		}
+
+		public struct Teleport
+		{
+			public int Map;
+			public int X;
+			public int Y;
 		}
 	}
 }

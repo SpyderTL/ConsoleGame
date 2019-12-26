@@ -104,10 +104,10 @@ namespace RpgGame
 
 					var teleport = Map.Tiles[Rows[Y][segment].Tile].Value;
 
-					DataMap.Load(World.Teleports[teleport].Map);
-					Current = World.Teleports[teleport].Map;
-					X = World.Teleports[teleport].X;
-					Y = World.Teleports[teleport].Y;
+					DataMap.Load(Map.Teleports[teleport].Map);
+					Current = Map.Teleports[teleport].Map;
+					X = Map.Teleports[teleport].X;
+					Y = Map.Teleports[teleport].Y;
 					Refresh();
 
 					MapChanged?.Invoke();
@@ -128,6 +128,11 @@ namespace RpgGame
 
 						MapChanged?.Invoke();
 					}
+					break;
+
+				case Map.TeleportType.Exit:
+					Floors.Clear();
+					MapExited?.Invoke();
 					break;
 			}
 		}

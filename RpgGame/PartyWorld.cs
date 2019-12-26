@@ -28,16 +28,7 @@ namespace RpgGame
 			Y--;
 			PositionChanged?.Invoke();
 
-			if (World.Tiles[World.Rows[Y].Segments[segment].Tile].Teleport)
-			{
-				var teleport = World.Tiles[World.Rows[Y].Segments[segment].Tile].Value;
-
-				DataMap.Load(World.Teleports[teleport].Map);
-				PartyMap.X = World.Teleports[teleport].X;
-				PartyMap.Y = World.Teleports[teleport].Y;
-
-				MapChanged?.Invoke();
-			}
+			Teleport(segment);
 
 			return true;
 		}
@@ -55,16 +46,7 @@ namespace RpgGame
 			Y++;
 			PositionChanged?.Invoke();
 
-			if (World.Tiles[World.Rows[Y].Segments[segment].Tile].Teleport)
-			{
-				var teleport = World.Tiles[World.Rows[Y].Segments[segment].Tile].Value;
-
-				DataMap.Load(World.Teleports[teleport].Map);
-				PartyMap.X = World.Teleports[teleport].X;
-				PartyMap.Y = World.Teleports[teleport].Y;
-
-				MapChanged?.Invoke();
-			}
+			Teleport(segment);
 
 			return true;
 		}
@@ -82,16 +64,7 @@ namespace RpgGame
 			X++;
 			PositionChanged?.Invoke();
 
-			if (World.Tiles[World.Rows[Y].Segments[segment].Tile].Teleport)
-			{
-				var teleport = World.Tiles[World.Rows[Y].Segments[segment].Tile].Value;
-
-				DataMap.Load(World.Teleports[teleport].Map);
-				PartyMap.X = World.Teleports[teleport].X;
-				PartyMap.Y = World.Teleports[teleport].Y;
-
-				MapChanged?.Invoke();
-			}
+			Teleport(segment);
 
 			return true;
 		}
@@ -109,21 +82,28 @@ namespace RpgGame
 			X--;
 			PositionChanged?.Invoke();
 
+			Teleport(segment);
+
+			return true;
+		}
+
+		private static void Teleport(int segment)
+		{
 			if (World.Tiles[World.Rows[Y].Segments[segment].Tile].Teleport)
 			{
 				var teleport = World.Tiles[World.Rows[Y].Segments[segment].Tile].Value;
 
 				DataMap.Load(World.Teleports[teleport].Map);
+				PartyMap.Current = World.Teleports[teleport].Map;
 				PartyMap.X = World.Teleports[teleport].X;
 				PartyMap.Y = World.Teleports[teleport].Y;
+				PartyMap.Refresh();
 
 				MapChanged?.Invoke();
 			}
-
-			return true;
 		}
 
-		public static void Update()
+		public static void Refresh()
 		{
 			Rows = new MapSegment[World.Rows.Length][];
 

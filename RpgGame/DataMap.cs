@@ -35,20 +35,20 @@ namespace RpgGame
 				}
 
 				// Load Teleports
-				reader.BaseStream.Position = Data.Address(0, 0xAC40);
+				//reader.BaseStream.Position = Data.Address(0, 0xAC40);
 
-				for (var teleport = 0; teleport < 32; teleport++)
-					World.Teleports[teleport].Map = reader.ReadByte();
+				//for (var teleport = 0; teleport < 32; teleport++)
+				//	World.Teleports[teleport].Map = reader.ReadByte();
 
-				reader.BaseStream.Position = Data.Address(0, 0xAC00);
+				//reader.BaseStream.Position = Data.Address(0, 0xAC00);
 
-				for (var teleport = 0; teleport < 32; teleport++)
-					World.Teleports[teleport].X = reader.ReadByte();
+				//for (var teleport = 0; teleport < 32; teleport++)
+				//	World.Teleports[teleport].X = reader.ReadByte();
 
-				reader.BaseStream.Position = Data.Address(0, 0xAC20);
+				//reader.BaseStream.Position = Data.Address(0, 0xAC20);
 
-				for (var teleport = 0; teleport < 32; teleport++)
-					World.Teleports[teleport].Y = reader.ReadByte();
+				//for (var teleport = 0; teleport < 32; teleport++)
+				//	World.Teleports[teleport].Y = reader.ReadByte();
 
 				// Load Segments
 				reader.BaseStream.Position = Data.Address(4, 0x8000 + (map * 2));

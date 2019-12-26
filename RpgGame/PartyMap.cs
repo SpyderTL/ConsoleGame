@@ -6,13 +6,17 @@ namespace RpgGame
 {
 	public static class PartyMap
 	{
+		public static Stack<Floor> Floors = new Stack<Floor>();
+
+		public static int Current;
 		public static int X;
 		public static int Y;
-		//public static int Segment;
 
 		public static MapSegment[][] Rows;
 
 		public static event Action PositionChanged;
+		public static event Action MapChanged;
+		public static event Action MapExited;
 
 		public static bool North()
 		{
@@ -21,11 +25,13 @@ namespace RpgGame
 
 			var segment = GetSegment(X, Y - 1);
 
-			//if (Map.Tiles[Rows[Y - 1][segment].Tile].Blocked)
-			//	return false;
+			if (Map.Tiles[Rows[Y - 1][segment].Tile].Blocked)
+				return false;
 
 			Y--;
 			PositionChanged?.Invoke();
+
+			Teleport(segment);
 
 			return true;
 		}
@@ -37,11 +43,13 @@ namespace RpgGame
 
 			var segment = GetSegment(X, Y + 1);
 
-			//if (Map.Tiles[Rows[Y + 1][segment].Tile].Blocked)
-			//	return false;
+			if (Map.Tiles[Rows[Y + 1][segment].Tile].Blocked)
+				return false;
 
 			Y++;
 			PositionChanged?.Invoke();
+
+			Teleport(segment);
 
 			return true;
 		}
@@ -53,11 +61,13 @@ namespace RpgGame
 
 			var segment = GetSegment(X + 1, Y);
 
-			//if (Map.Tiles[Rows[Y][segment].Tile].Blocked)
-			//	return false;
+			if (Map.Tiles[Rows[Y][segment].Tile].Blocked)
+				return false;
 
 			X++;
 			PositionChanged?.Invoke();
+
+			Teleport(segment);
 
 			return true;
 		}
@@ -69,16 +79,60 @@ namespace RpgGame
 
 			var segment = GetSegment(X - 1, Y);
 
-			//if (Map.Tiles[Rows[Y][segment].Tile].Blocked)
-			//	return false;
+			if (Map.Tiles[Rows[Y][segment].Tile].Blocked)
+				return false;
 
 			X--;
 			PositionChanged?.Invoke();
 
+			Teleport(segment);
+
 			return true;
 		}
 
-		public static void Update()
+		private static void Teleport(int segment)
+		{
+			switch (Map.Tiles[Rows[Y][segment].Tile].TeleportType)
+			{
+				case Map.TeleportType.Normal:
+					Floors.Push(new Floor
+					{
+						Map = Current,
+						X = X,
+						Y = Y
+					});
+
+					var teleport = Map.Tiles[Rows[Y][segment].Tile].Value;
+
+					DataMap.Load(World.Teleports[teleport].Map);
+					Current = World.Teleports[teleport].Map;
+					X = World.Teleports[teleport].X;
+					Y = World.Teleports[teleport].Y;
+					Refresh();
+
+					MapChanged?.Invoke();
+					break;
+
+				case Map.TeleportType.Warp:
+					if (Floors.Count == 0)
+						MapExited?.Invoke();
+					else
+					{
+						var floor = Floors.Pop();
+
+						DataMap.Load(floor.Map);
+						Current = floor.Map;
+						X = floor.X;
+						Y = floor.Y;
+						Refresh();
+
+						MapChanged?.Invoke();
+					}
+					break;
+			}
+		}
+
+		public static void Refresh()
 		{
 			Rows = new MapSegment[64][];
 
@@ -135,6 +189,13 @@ namespace RpgGame
 			public int Left;
 			public int Right;
 			public int Tile;
+		}
+
+		public struct Floor
+		{
+			public int Map;
+			public int X;
+			public int Y;
 		}
 	}
 }

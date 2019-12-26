@@ -75,6 +75,8 @@ namespace ConsoleGame
 
 								RpgGame.DataWorld.Load();
 
+								RpgGame.PartyWorld.Refresh();
+
 								Game.Mode = Game.GameMode.World;
 								break;
 
@@ -111,8 +113,6 @@ namespace ConsoleGame
 						break;
 
 					case Game.GameMode.World:
-						RpgGame.PartyWorld.Update();
-
 						RpgWorld.Load();
 
 						InputRpgWorld.Enable();
@@ -125,8 +125,6 @@ namespace ConsoleGame
 						break;
 
 					case Game.GameMode.Map:
-						RpgGame.PartyMap.Update();
-
 						RpgMap.Load();
 
 						InputRpgMap.Enable();

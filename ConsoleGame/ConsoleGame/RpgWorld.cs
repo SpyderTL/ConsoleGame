@@ -25,6 +25,7 @@ namespace ConsoleGame
 		internal static void Disable()
 		{
 			RpgGame.PartyWorld.PositionChanged -= PartyWorld_PositionChanged;
+			RpgGame.PartyWorld.MapChanged -= PartyWorld_MapChanged;
 		}
 
 		private static void PartyWorld_PositionChanged()

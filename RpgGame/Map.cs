@@ -17,14 +17,39 @@ namespace RpgGame
 
 		public struct Tile
 		{
-			public string Name;
-			public int Walk;
-			public int Fly;
-			public int Sail;
-			public bool Dock;
-			public int PortalMap;
-			public int PortalX;
-			public int PortalY;
+			public bool Blocked;
+			public TileType TileType;
+			public TeleportType TeleportType;
+			public bool Battle;
+			public byte Value;
+		}
+
+		public enum TileType
+		{
+			Normal,
+			Door,
+			Locked,
+			CloseRoom,
+			Treasure,
+			Battle,
+			Damage,
+			Crown,
+			Cube,
+			FourOrbs,
+			UseRod,
+			UseLute,
+			EarthOrb,
+			FireOrb,
+			WaterOrb,
+			AirOrb
+		}
+
+		public enum TeleportType
+		{
+			None,
+			Warp,
+			Normal,
+			Exit
 		}
 	}
 }

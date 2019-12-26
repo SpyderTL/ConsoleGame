@@ -65,7 +65,7 @@ namespace ConsoleGame
 			Map.Zones = zones.ToArray();
 		}
 
-		internal class Tile
+		internal struct Tile
 		{
 			internal string Name;
 			internal char Character;

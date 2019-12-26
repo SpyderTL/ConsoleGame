@@ -11,7 +11,47 @@ namespace RpgGame
 		{
 			using (var reader = Data.Reader())
 			{
-				reader.BaseStream.Position = Data.Address(4, 0x8000 + (map >> 1));
+				// Find Tileset
+				reader.BaseStream.Position = Data.Address(0, 0xACC0 + map);
+
+				var tileset = reader.ReadByte();
+
+				// Load Tiles
+				reader.BaseStream.Position = Data.Address(0, 0x8800 + (tileset * 256));
+
+				for (var tile = 0; tile < 128; tile++)
+				{
+					var value = reader.ReadByte();
+					var value2 = reader.ReadByte();
+
+					Map.Tiles[tile] = new Map.Tile
+					{
+						Blocked = (value & 0x01) == 0x01,
+						TileType = (Map.TileType)((value >> 1) & 0x0f),
+						TeleportType = (Map.TeleportType)(value >> 6),
+						Battle = (value & 0x20) == 0x20,
+						Value = value2
+					};
+				}
+
+				// Load Teleports
+				reader.BaseStream.Position = Data.Address(0, 0xAC40);
+
+				for (var teleport = 0; teleport < 32; teleport++)
+					World.Teleports[teleport].Map = reader.ReadByte();
+
+				reader.BaseStream.Position = Data.Address(0, 0xAC00);
+
+				for (var teleport = 0; teleport < 32; teleport++)
+					World.Teleports[teleport].X = reader.ReadByte();
+
+				reader.BaseStream.Position = Data.Address(0, 0xAC20);
+
+				for (var teleport = 0; teleport < 32; teleport++)
+					World.Teleports[teleport].Y = reader.ReadByte();
+
+				// Load Segments
+				reader.BaseStream.Position = Data.Address(4, 0x8000 + (map * 2));
 
 				var address = reader.ReadUInt16();
 

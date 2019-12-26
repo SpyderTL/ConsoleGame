@@ -21,8 +21,8 @@ namespace RpgGame
 
 			var segment = GetSegment(X, Y - 1);
 
-			if (Map.Tiles[Rows[Y - 1][segment].Tile].Walk == -1)
-				return false;
+			//if (Map.Tiles[Rows[Y - 1][segment].Tile].Blocked)
+			//	return false;
 
 			Y--;
 			PositionChanged?.Invoke();
@@ -37,8 +37,8 @@ namespace RpgGame
 
 			var segment = GetSegment(X, Y + 1);
 
-			if (Map.Tiles[Rows[Y + 1][segment].Tile].Walk == -1)
-				return false;
+			//if (Map.Tiles[Rows[Y + 1][segment].Tile].Blocked)
+			//	return false;
 
 			Y++;
 			PositionChanged?.Invoke();
@@ -53,8 +53,8 @@ namespace RpgGame
 
 			var segment = GetSegment(X + 1, Y);
 
-			if (Map.Tiles[Rows[Y][segment].Tile].Walk == -1)
-				return false;
+			//if (Map.Tiles[Rows[Y][segment].Tile].Blocked)
+			//	return false;
 
 			X++;
 			PositionChanged?.Invoke();
@@ -69,8 +69,8 @@ namespace RpgGame
 
 			var segment = GetSegment(X - 1, Y);
 
-			if (Map.Tiles[Rows[Y][segment].Tile].Walk == -1)
-				return false;
+			//if (Map.Tiles[Rows[Y][segment].Tile].Blocked)
+			//	return false;
 
 			X--;
 			PositionChanged?.Invoke();
@@ -97,6 +97,7 @@ namespace RpgGame
 					segments.Add(new MapSegment { Left = left, Right = 63, Tile = tile });
 
 					Rows[y] = segments.ToArray();
+					segments.Clear();
 
 					right -= 64;
 					left = 0;
@@ -108,6 +109,7 @@ namespace RpgGame
 				if (right == 63)
 				{
 					Rows[y] = segments.ToArray();
+					segments.Clear();
 
 					left = 0;
 					right = 0;

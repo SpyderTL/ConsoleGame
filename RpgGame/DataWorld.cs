@@ -21,6 +21,7 @@ namespace RpgGame
 
 					World.Tiles[tile] = new World.Tile
 					{
+						Blocked = (value & 0x01) == 0x01,
 						Forest = (value & 0x10) == 0x10,
 						Dock = (value & 0x20) == 0x20,
 						Type = (World.TileType)(value >> 6),

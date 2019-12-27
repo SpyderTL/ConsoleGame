@@ -23,6 +23,7 @@ namespace RpgGame
 
 		public struct Tile
 		{
+			public bool Blocked;
 			public bool Dock;
 			public bool Forest;
 			public TileType Type;

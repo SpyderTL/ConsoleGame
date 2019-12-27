@@ -62,7 +62,7 @@ namespace ConsoleGame
 							Screen.Characters[(10 * Screen.Width) + 20] = ';';
 
 							// Draw Tile Description
-							Screen.DrawString(Map.Zones[zone].Description, 22, 21);
+							//Screen.DrawString(Map.Zones[zone].Description, 22, 21);
 						}
 						else
 							Screen.Characters[(y * Screen.Width) + x] = Map.Zones[zone].Character;

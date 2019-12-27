@@ -17,15 +17,17 @@ namespace RpgGame
 
 		public static bool North()
 		{
-			if (Y == 0)
+			var y = Y - 1;
+
+			if (y == -1)
+				y = 63;
+
+			var segment = GetSegment(X, y);
+
+			if (World.Tiles[Rows[y][segment].Tile].Blocked)
 				return false;
 
-			var segment = GetSegment(X, Y - 1);
-
-			//if (World.Tiles[World.Rows[Y - 1].Segments[segment].Tile].Blocked)
-			//	return false;
-
-			Y--;
+			Y = y;
 			PositionChanged?.Invoke();
 
 			Teleport(segment);
@@ -35,15 +37,17 @@ namespace RpgGame
 
 		public static bool South()
 		{
-			if (Y == Rows.Length - 1)
+			var y = Y + 1;
+
+			if (y == 64)
+				y = 0;
+
+			var segment = GetSegment(X, y);
+
+			if (World.Tiles[Rows[y][segment].Tile].Blocked)
 				return false;
 
-			var segment = GetSegment(X, Y + 1);
-
-			//if (World.Tiles[World.Rows[Y + 1].Segments[segment].Tile].Blocked)
-			//	return false;
-
-			Y++;
+			Y = y;
 			PositionChanged?.Invoke();
 
 			Teleport(segment);
@@ -53,15 +57,17 @@ namespace RpgGame
 
 		public static bool East()
 		{
-			if (X == 255)
+			var x = X + 1;
+
+			if (x == 64)
+				x = 0;
+
+			var segment = GetSegment(x, Y);
+
+			if (World.Tiles[Rows[Y][segment].Tile].Blocked)
 				return false;
 
-			var segment = GetSegment(X + 1, Y);
-
-			//if (World.Tiles[World.Rows[Y].Segments[segment].Tile].Blocked)
-			//	return false;
-
-			X++;
+			X = x;
 			PositionChanged?.Invoke();
 
 			Teleport(segment);
@@ -71,15 +77,17 @@ namespace RpgGame
 
 		public static bool West()
 		{
-			if (Y == 0)
+			var x = X - 1;
+
+			if (x == -1)
+				x = 63;
+
+			var segment = GetSegment(x, Y);
+
+			if (World.Tiles[Rows[Y][segment].Tile].Blocked)
 				return false;
 
-			var segment = GetSegment(X - 1, Y);
-
-			//if (World.Tiles[World.Rows[Y].Segments[segment].Tile].Blocked)
-			//	return false;
-
-			X--;
+			X = x;
 			PositionChanged?.Invoke();
 
 			Teleport(segment);

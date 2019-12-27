@@ -20,7 +20,7 @@ namespace RpgGame
 			var y = Y - 1;
 
 			if (y == -1)
-				y = 63;
+				y = 255;
 
 			var segment = GetSegment(X, y);
 
@@ -39,7 +39,7 @@ namespace RpgGame
 		{
 			var y = Y + 1;
 
-			if (y == 64)
+			if (y == 256)
 				y = 0;
 
 			var segment = GetSegment(X, y);
@@ -59,7 +59,7 @@ namespace RpgGame
 		{
 			var x = X + 1;
 
-			if (x == 64)
+			if (x == 256)
 				x = 0;
 
 			var segment = GetSegment(x, Y);
@@ -80,7 +80,7 @@ namespace RpgGame
 			var x = X - 1;
 
 			if (x == -1)
-				x = 63;
+				x = 255;
 
 			var segment = GetSegment(x, Y);
 

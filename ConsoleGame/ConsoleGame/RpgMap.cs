@@ -49,6 +49,9 @@ namespace ConsoleGame
 
 		internal static void Load()
 		{
+			Map.Width = 64;
+			Map.Height = 64;
+
 			for (var tile = 0; tile < Tiles.Length; tile++)
 			{
 				switch (RpgGame.Map.Tiles[tile].TeleportType)

@@ -29,18 +29,33 @@ namespace ConsoleGame
 				{
 					for (var x = 0; x < 40; x++)
 					{
-						var zone = 0;
+						var zone = -1;
 
-						for (var z = 1; z < Map.Zones.Length; z++)
+						var x2 = x + Party.X - 20;
+						var y2 = y + Party.Y - 10;
+
+						if (x2 < 0)
+							x2 += Map.Width;
+						else if (x2 >= Map.Width)
+							x2 -= Map.Width;
+
+						if (y2 < 0)
+							y2 += Map.Height;
+						else if (y2 >= Map.Height)
+							y2 -= Map.Height;
+
+						for (var z = 0; z < Map.Zones.Length; z++)
 						{
-							if (Map.Zones[z].Left <= x + Party.X - 20 &&
-								Map.Zones[z].Right >= x + Party.X - 20 &&
-								Map.Zones[z].Top <= y + Party.Y - 10 &&
-								Map.Zones[z].Bottom >= y + Party.Y - 10)
+							if (Map.Zones[z].Left <= x2 &&
+								Map.Zones[z].Right >= x2 &&
+								Map.Zones[z].Top <= y2 &&
+								Map.Zones[z].Bottom >= y2)
 								zone = z;
 						}
 
-						if (y == 10 &&
+						if (zone == -1)
+							Screen.Characters[(y * Screen.Width) + x] = ' ';
+						else if (y == 10 &&
 							x == 20)
 						{
 							// Draw Party

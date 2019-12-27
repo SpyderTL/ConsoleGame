@@ -38,6 +38,9 @@ namespace ConsoleGame
 
 		internal static void Load()
 		{
+			Map.Width = 256;
+			Map.Height = 256;
+
 			var zones = new List<Map.Zone>();
 
 			for (var row = 0; row < RpgGame.PartyWorld.Rows.Length; row++)

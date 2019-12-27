@@ -5,7 +5,9 @@ namespace ConsoleGame
 	internal static class Map
 	{
 		internal static Zone[] Zones;
-		
+		internal static int Width;
+		internal static int Height;
+
 		internal class Zone
 		{
 			internal char Character;

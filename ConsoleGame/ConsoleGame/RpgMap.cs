@@ -21,8 +21,9 @@ namespace ConsoleGame
 
 		private static void PartyMap_TreasureFound(int item)
 		{
-			Screen.DrawString("Item Found", 10, 10);
-
+			Screen.FillRectangle(' ', 10, 0, 15, 39);
+			Screen.DrawString("Item Found", 10, 12);
+			Screen.DrawString(RpgGame.Map.Items[item].Name, 16, 14);
 			Screen.Update();
 		}
 

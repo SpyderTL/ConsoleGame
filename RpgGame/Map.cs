@@ -11,6 +11,7 @@ namespace RpgGame
 		public static Exit[] Exits = new Exit[16];
 		public static Treasure[] Treasures = new Treasure[256];
 		public static Segment[] Segments;
+		public static Item[] Items = new Item[256];
 
 		public struct Segment
 		{
@@ -72,6 +73,24 @@ namespace RpgGame
 		{
 			public int Item;
 			public bool Opened;
+		}
+
+		public struct Item
+		{
+			public string Name;
+			public ItemType Type;
+		}
+
+		public enum ItemType
+		{
+			Item,
+			Special,
+			Weapon,
+			Armor,
+			Helmet,
+			Gauntlet,
+			Shield,
+			Gold
 		}
 	}
 }

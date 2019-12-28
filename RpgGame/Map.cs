@@ -8,6 +8,8 @@ namespace RpgGame
 	{
 		public static Tile[] Tiles = new Tile[128];
 		public static Teleport[] Teleports = new Teleport[64];
+		public static Exit[] Exits = new Exit[16];
+		public static Treasure[] Treasures = new Treasure[256];
 		public static Segment[] Segments;
 
 		public struct Segment
@@ -58,6 +60,18 @@ namespace RpgGame
 			public int Map;
 			public int X;
 			public int Y;
+		}
+
+		public struct Exit
+		{
+			public int X;
+			public int Y;
+		}
+
+		public struct Treasure
+		{
+			public int Item;
+			public bool Opened;
 		}
 	}
 }

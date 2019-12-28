@@ -13,9 +13,17 @@ namespace ConsoleGame
 			RpgGame.PartyMap.PositionChanged += PartyMap_PositionChanged;
 			RpgGame.PartyMap.MapChanged += PartyMap_MapChanged;
 			RpgGame.PartyMap.MapExited += PartyMap_MapExited;
+			RpgGame.PartyMap.TreasureFound += PartyMap_TreasureFound;
 
 			Party.X = RpgGame.PartyMap.X;
 			Party.Y = RpgGame.PartyMap.Y;
+		}
+
+		private static void PartyMap_TreasureFound(int item)
+		{
+			Screen.DrawString("Item Found", 10, 10);
+
+			Screen.Update();
 		}
 
 		private static void PartyMap_MapExited()
@@ -37,6 +45,7 @@ namespace ConsoleGame
 			RpgGame.PartyMap.PositionChanged -= PartyMap_PositionChanged;
 			RpgGame.PartyMap.MapChanged -= PartyMap_MapChanged;
 			RpgGame.PartyMap.MapExited -= PartyMap_MapExited;
+			RpgGame.PartyMap.TreasureFound -= PartyMap_TreasureFound;
 		}
 
 		private static void PartyMap_PositionChanged()

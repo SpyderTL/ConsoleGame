@@ -50,6 +50,23 @@ namespace RpgGame
 				for (var teleport = 0; teleport < Map.Teleports.Length; teleport++)
 					Map.Teleports[teleport].Y = reader.ReadByte();
 
+				// Load Exits
+				reader.BaseStream.Position = Data.Address(0, 0xAC60);
+
+				for (var exit = 0; exit < Map.Exits.Length; exit++)
+					Map.Exits[exit].X = reader.ReadByte();
+
+				reader.BaseStream.Position = Data.Address(0, 0xAC70);
+
+				for (var exit = 0; exit < Map.Exits.Length; exit++)
+					Map.Exits[exit].Y = reader.ReadByte();
+
+				// Load Treasures
+				reader.BaseStream.Position = Data.Address(0, 0xB100);
+
+				for (var treasure = 0; treasure < Map.Exits.Length; treasure++)
+					Map.Treasures[treasure].Item = reader.ReadByte();
+
 				// Load Segments
 				reader.BaseStream.Position = Data.Address(4, 0x8000 + (map * 2));
 

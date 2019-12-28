@@ -18,6 +18,7 @@ namespace RpgGame
 		public static event Action PositionChanged;
 		public static event Action MapChanged;
 		public static event Action MapExited;
+		public static event Action<int> TreasureFound;
 
 		public static bool North()
 		{
@@ -28,13 +29,15 @@ namespace RpgGame
 
 			var segment = GetSegment(X, y);
 
-			if (Map.Tiles[Rows[y][segment].Tile].Blocked)
+			if (!Move(Rows[y][segment].Tile))
 				return false;
 
 			Y = y;
 			PositionChanged?.Invoke();
 
-			Teleport(segment);
+			Treasure(Rows[Y][segment].Tile);
+
+			Teleport(Rows[Y][segment].Tile);
 
 			return true;
 		}
@@ -48,13 +51,15 @@ namespace RpgGame
 
 			var segment = GetSegment(X, y);
 
-			if (Map.Tiles[Rows[y][segment].Tile].Blocked)
+			if (!Move(Rows[y][segment].Tile))
 				return false;
 
 			Y = y;
 			PositionChanged?.Invoke();
 
-			Teleport(segment);
+			Treasure(Rows[Y][segment].Tile);
+
+			Teleport(Rows[Y][segment].Tile);
 
 			return true;
 		}
@@ -68,13 +73,15 @@ namespace RpgGame
 
 			var segment = GetSegment(x, Y);
 
-			if (Map.Tiles[Rows[Y][segment].Tile].Blocked)
+			if (!Move(Rows[Y][segment].Tile))
 				return false;
 
 			X = x;
 			PositionChanged?.Invoke();
 
-			Teleport(segment);
+			Treasure(Rows[Y][segment].Tile);
+
+			Teleport(Rows[Y][segment].Tile);
 
 			return true;
 		}
@@ -88,20 +95,40 @@ namespace RpgGame
 
 			var segment = GetSegment(x, Y);
 
-			if (Map.Tiles[Rows[Y][segment].Tile].Blocked)
+			if (!Move(Rows[Y][segment].Tile))
 				return false;
 
 			X = x;
 			PositionChanged?.Invoke();
 
-			Teleport(segment);
+			Treasure(Rows[Y][segment].Tile);
+
+			Teleport(Rows[Y][segment].Tile);
 
 			return true;
 		}
 
-		private static void Teleport(int segment)
+		private static bool Move(int tile)
 		{
-			switch (Map.Tiles[Rows[Y][segment].Tile].TeleportType)
+			switch (Map.Tiles[tile].TileType)
+			{
+				case Map.TileType.Door:
+					return true;
+
+				case Map.TileType.Locked:
+					return false;
+
+				case Map.TileType.Treasure:
+					return true;
+
+				default:
+					return !Map.Tiles[tile].Blocked;
+			}
+		}
+
+		private static void Teleport(int tile)
+		{
+			switch (Map.Tiles[tile].TeleportType)
 			{
 				case Map.TeleportType.Normal:
 					Floors.Push(new Floor
@@ -111,7 +138,7 @@ namespace RpgGame
 						Y = Y
 					});
 
-					var teleport = Map.Tiles[Rows[Y][segment].Tile].Value;
+					var teleport = Map.Tiles[tile].Value;
 
 					DataMap.Load(Map.Teleports[teleport].Map);
 					Current = Map.Teleports[teleport].Map;
@@ -141,8 +168,29 @@ namespace RpgGame
 
 				case Map.TeleportType.Exit:
 					Floors.Clear();
+
+					var exit = Map.Tiles[tile].Value;
+
+					PartyWorld.X = Map.Exits[exit].X;
+					PartyWorld.Y = Map.Exits[exit].Y;
+
 					MapExited?.Invoke();
 					break;
+			}
+		}
+
+		private static void Treasure(int tile)
+		{
+			if (Map.Tiles[tile].TileType == Map.TileType.Treasure)
+			{
+				var treasure = Map.Tiles[tile].Value;
+
+				if (!Map.Treasures[treasure].Opened)
+				{
+					Map.Treasures[treasure].Opened = true;
+
+					TreasureFound?.Invoke(Map.Treasures[treasure].Item);
+				}
 			}
 		}
 

@@ -44,6 +44,25 @@ namespace ConsoleGame
 						else if (y2 >= Map.Height)
 							y2 -= Map.Height;
 
+						var done = false;
+
+						for (var obj = 0; obj < RpgGame.Map.Objects.Length; obj++)
+						{
+							if (RpgGame.Map.Objects[obj].Type != 0)
+							{
+								if (RpgGame.Map.Objects[obj].X == x2 &&
+									RpgGame.Map.Objects[obj].Y == y2)
+								{
+									Screen.Characters[(y * Screen.Width) + x] = ';';
+									done = true;
+									break;
+								}
+							}
+						}
+
+						if(done)
+							continue;
+
 						for (var z = 0; z < Map.Zones.Length; z++)
 						{
 							if (Map.Zones[z].Left <= x2 &&

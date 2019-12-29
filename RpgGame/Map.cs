@@ -12,6 +12,9 @@ namespace RpgGame
 		public static Treasure[] Treasures = new Treasure[256];
 		public static Segment[] Segments;
 		public static Item[] Items = new Item[256];
+		public static Object[] Objects = new Object[16];
+		public static string[] Dialogs = new string[256];
+		public static int[][] ObjectDialogs = new int[208][];
 
 		public struct Segment
 		{
@@ -91,6 +94,14 @@ namespace RpgGame
 			Gauntlet,
 			Shield,
 			Gold
+		}
+
+		public struct Object
+		{
+			public byte Type;
+			public int X;
+			public int Y;
+			public int Flags;
 		}
 	}
 }

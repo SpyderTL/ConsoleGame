@@ -14,9 +14,22 @@ namespace ConsoleGame
 			RpgGame.PartyMap.MapChanged += PartyMap_MapChanged;
 			RpgGame.PartyMap.MapExited += PartyMap_MapExited;
 			RpgGame.PartyMap.TreasureFound += PartyMap_TreasureFound;
+			RpgGame.PartyMap.ObjectResponded += PartyMap_ObjectResponded; ;
 
 			Party.X = RpgGame.PartyMap.X;
 			Party.Y = RpgGame.PartyMap.Y;
+		}
+
+		private static void PartyMap_ObjectResponded(int objectId, int dialog)
+		{
+			var lines = RpgGame.Map.Dialogs[dialog].Split("[New Line]");
+
+			Screen.FillRectangle(' ', 5, 5, 6 + lines.Length, 34);
+
+			for(var line = 0; line < lines.Length; line++)
+				Screen.DrawString(lines[line], 8, 6 + line);
+
+			Screen.Update();
 		}
 
 		private static void PartyMap_TreasureFound(int item)

@@ -19,6 +19,7 @@ namespace RpgGame
 		public static event Action MapChanged;
 		public static event Action MapExited;
 		public static event Action<int> TreasureFound;
+		public static event Action<int, int> ObjectResponded;
 
 		public static bool North()
 		{
@@ -26,6 +27,9 @@ namespace RpgGame
 
 			if (y == -1)
 				y = 63;
+
+			if (Use(X, y))
+				return false;
 
 			var segment = GetSegment(X, y);
 
@@ -49,6 +53,9 @@ namespace RpgGame
 			if (y == 64)
 				y = 0;
 
+			if (Use(X, y))
+				return false;
+
 			var segment = GetSegment(X, y);
 
 			if (!Move(Rows[y][segment].Tile))
@@ -70,6 +77,9 @@ namespace RpgGame
 
 			if (x == 64)
 				x = 0;
+
+			if (Use(x, Y))
+				return false;
 
 			var segment = GetSegment(x, Y);
 
@@ -93,6 +103,9 @@ namespace RpgGame
 			if (x == -1)
 				x = 63;
 
+			if (Use(x, Y))
+				return false;
+
 			var segment = GetSegment(x, Y);
 
 			if (!Move(Rows[Y][segment].Tile))
@@ -106,6 +119,31 @@ namespace RpgGame
 			Teleport(Rows[Y][segment].Tile);
 
 			return true;
+		}
+
+		private static bool Use(int x, int y)
+		{
+			for (var obj = 0; obj < Map.Objects.Length; obj++)
+			{
+				if (Map.Objects[obj].Type != 0 &&
+					Map.Objects[obj].X == x &&
+					Map.Objects[obj].Y == y)
+				{
+					for (var dialog = 1; dialog < 4; dialog++)
+					{
+						var value = Map.ObjectDialogs[Map.Objects[obj].Type][dialog];
+
+						if (value != 0)
+						{
+							ObjectResponded?.Invoke(obj, value);
+
+							return true;
+						}
+					}
+				}
+			}
+
+			return false;
 		}
 
 		private static bool Move(int tile)

@@ -80,7 +80,7 @@ namespace RpgGame
 				{
 					reader.BaseStream.Position = Data.Address(0x0a, addresses[item]);
 
-					Map.Items[item].Name = reader.ReadItem();
+					Map.Items[item].Name = reader.ReadText();
 
 					if (item > 0x16)
 						Map.Items[item].Type = Map.ItemType.Special;
@@ -135,10 +135,61 @@ namespace RpgGame
 				}
 
 				Map.Segments = segments.ToArray();
+
+				// Load Objects
+				reader.BaseStream.Position = Data.Address(0, 0xB400 + (map * 0x30));
+
+				for (var obj = 0; obj < Map.Objects.Length; obj++)
+				{
+					var type = reader.ReadByte();
+					var value = reader.ReadByte();
+					var y = reader.ReadByte();
+
+					var flags = value & 0xc0;
+					var x = value & 0x3f;
+
+					var mapObject = new Map.Object
+					{
+						Type = type,
+						X = x,
+						Y = y,
+						Flags = flags
+					};
+
+					Map.Objects[obj] = mapObject;
+				}
+
+				// Load Dialogs
+				reader.BaseStream.Position = Data.Address(0x0a, 0x8000);
+
+				for (var dialog = 0; dialog < 256; dialog++)
+				{
+					addresses[dialog] = reader.ReadUInt16();
+				};
+
+				for (var dialog = 0; dialog < 256; dialog++)
+				{
+					reader.BaseStream.Position = Data.Address(0x0a, addresses[dialog]);
+
+					Map.Dialogs[dialog] = reader.ReadText();
+				}
+
+				// Load Object Dialogs
+				reader.BaseStream.Position = Data.Address(0x0e, 0x95D5);
+
+				for (var obj = 0; obj < 208; obj++)
+				{
+					Map.ObjectDialogs[obj] = new int[4];
+
+					for (var dialog = 0; dialog < 4; dialog++)
+					{
+						Map.ObjectDialogs[obj][dialog] = reader.ReadByte();
+					}
+				}
 			}
 		}
 
-		private static string ReadItem(this BinaryReader reader)
+		private static string ReadText(this BinaryReader reader)
 		{
 			var builder = new StringBuilder(256);
 
@@ -150,13 +201,13 @@ namespace RpgGame
 					break;
 
 				if (character == 0x01)
-					builder.Append("\\n");
+					builder.Append("[Next Line]");
 				else if (character == 0x02)
 					builder.Append("[Item Name]");
 				else if (character == 0x03)
 					builder.Append("[Character Name]");
 				else if (character == 0x05)
-					builder.Append("\\r\\n");
+					builder.Append("[New Line]");
 				else
 					builder.Append(Characters[character]);
 			}

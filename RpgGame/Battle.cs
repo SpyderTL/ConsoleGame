@@ -6,17 +6,21 @@ namespace RpgGame
 {
 	public static class Battle
 	{
+		public static event Action TurnStarted;
 		public static event Action TurnComplete;
+		public static event Action BattleStarted;
 		public static event Action BattleComplete;
 
 		public static Enemy[] Enemies;
-		public static Activity[] PartyActions;
-		public static Activity[] EnemyActions;
-		public static BattleResult Result;
+		public static Activity[][] AllyOptions;
+		public static Activity[][] EnemyOptions;
+		public static int[] AllyActions;
+		public static int[] EnemyActions;
+		public static Event[] Events;
+		public static BattleResults Result;
 
 		public struct Enemy
 		{
-			public string Name;
 			public int Type;
 			public int Health;
 			public int Power;
@@ -25,7 +29,7 @@ namespace RpgGame
 		public struct Activity
 		{
 			public ActivityType Type;
-			public int Action;
+			public int Value;
 			public TargetType TargetType;
 			public int Target;
 		}
@@ -47,7 +51,39 @@ namespace RpgGame
 			Allies
 		}
 
-		public enum BattleResult
+		public struct Event
+		{
+			public EventType Type;
+			public int Source;
+			public SourceType SourceType;
+			public int Target;
+			public TargetType TargetType;
+			public int Value;
+		}
+
+		public enum SourceType
+		{
+			Enemy,
+			Ally,
+		}
+
+		public enum EventType
+		{
+			Attack,
+			Special,
+			Magic,
+			Item,
+			Run,
+			Miss,
+			Health,
+			Power,
+			Inflict,
+			Cure,
+			Resist,
+			Weak
+		}
+
+		public enum BattleResults
 		{
 			Victory,
 			Defeat,

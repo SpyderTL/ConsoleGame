@@ -41,6 +41,10 @@ namespace ConsoleGame
 				case ConsoleKey.Escape:
 					Input.Pressed(Input.Button.Back);
 					break;
+
+				default:
+					Input.Pressed(key.KeyChar);
+					break;
 			}
 		}
 	}

@@ -23,6 +23,15 @@ namespace ConsoleGame
 
 		internal static void Draw()
 		{
+			for (var ally = 0; ally < Battle.Allies.Length; ally++)
+			{
+				Screen.DrawString(Battle.Allies[ally].Name, 0, ally);
+			}
+
+			for (var enemy = 0; enemy < Battle.Enemies.Length; enemy++)
+			{
+				Screen.DrawString(Battle.Enemies[enemy].Name, 20, enemy);
+			}
 		}
 
 		internal static void Banner()
@@ -48,6 +57,14 @@ namespace ConsoleGame
 				while (Environment.TickCount < wait)
 					Thread.Sleep(10);
 			}
+
+			wait = Environment.TickCount + 200;
+
+			while (Environment.TickCount < wait)
+				Thread.Sleep(10);
+
+			Screen.Clear();
+			Screen.Update();
 		}
 	}
 }

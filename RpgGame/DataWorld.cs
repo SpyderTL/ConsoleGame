@@ -87,6 +87,22 @@ namespace RpgGame
 
 					World.Rows[row].Segments = segments.ToArray();
 				}
+
+				// Load Domain Formations
+				reader.BaseStream.Position = Data.Address(0x0B, 0x8000);
+
+				for (var domain = 0; domain < World.Domains.Length; domain++)
+				{
+					World.Domains[domain].Formations = new World.DomainFormation[8];
+
+					for (var formation = 0; formation < 8; formation++)
+					{
+						var data = reader.ReadByte();
+
+						World.Domains[domain].Formations[formation].Formation = data & 0x7f;
+						World.Domains[domain].Formations[formation].Alternate = (data & 0x80) == 0x80;
+					}
+				}
 			}
 		}
 	}

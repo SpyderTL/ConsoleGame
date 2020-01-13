@@ -10,9 +10,17 @@ namespace ConsoleGame
 		{
 			RpgGame.PartyWorld.PositionChanged += PartyWorld_PositionChanged;
 			RpgGame.PartyWorld.MapChanged += PartyWorld_MapChanged;
+			RpgGame.PartyWorld.PartyAttacked += PartyWorld_PartyAttacked;
 
 			Party.X = RpgGame.PartyWorld.X;
 			Party.Y = RpgGame.PartyWorld.Y;
+		}
+
+		private static void PartyWorld_PartyAttacked()
+		{
+			Game.Mode = Game.GameMode.Battle;
+
+			MapScreen.Hide();
 		}
 
 		private static void PartyWorld_MapChanged()
@@ -26,6 +34,7 @@ namespace ConsoleGame
 		{
 			RpgGame.PartyWorld.PositionChanged -= PartyWorld_PositionChanged;
 			RpgGame.PartyWorld.MapChanged -= PartyWorld_MapChanged;
+			RpgGame.PartyWorld.PartyAttacked -= PartyWorld_PartyAttacked;
 		}
 
 		private static void PartyWorld_PositionChanged()

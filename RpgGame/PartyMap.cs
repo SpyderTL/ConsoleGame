@@ -20,6 +20,7 @@ namespace RpgGame
 		public static event Action MapExited;
 		public static event Action<int> TreasureFound;
 		public static event Action<int, int> ObjectResponded;
+		public static event Action PartyAttacked;
 
 		public static bool North()
 		{

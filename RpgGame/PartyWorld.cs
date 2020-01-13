@@ -14,6 +14,7 @@ namespace RpgGame
 
 		public static event Action PositionChanged;
 		public static event Action MapChanged;
+		public static event Action PartyAttacked;
 
 		public static bool North()
 		{
@@ -24,12 +25,13 @@ namespace RpgGame
 
 			var segment = GetSegment(X, y);
 
-			//if (World.Tiles[Rows[y][segment].Tile].Blocked)
-			//	return false;
+			if (World.Tiles[Rows[y][segment].Tile].Blocked)
+				return false;
 
 			Y = y;
 			PositionChanged?.Invoke();
 
+			Battle(segment);
 			Teleport(segment);
 
 			return true;
@@ -44,12 +46,13 @@ namespace RpgGame
 
 			var segment = GetSegment(X, y);
 
-			//if (World.Tiles[Rows[y][segment].Tile].Blocked)
-			//	return false;
+			if (World.Tiles[Rows[y][segment].Tile].Blocked)
+				return false;
 
 			Y = y;
 			PositionChanged?.Invoke();
 
+			Battle(segment);
 			Teleport(segment);
 
 			return true;
@@ -64,12 +67,13 @@ namespace RpgGame
 
 			var segment = GetSegment(x, Y);
 
-			//if (World.Tiles[Rows[Y][segment].Tile].Blocked)
-			//	return false;
+			if (World.Tiles[Rows[Y][segment].Tile].Blocked)
+				return false;
 
 			X = x;
 			PositionChanged?.Invoke();
 
+			Battle(segment);
 			Teleport(segment);
 
 			return true;
@@ -84,15 +88,35 @@ namespace RpgGame
 
 			var segment = GetSegment(x, Y);
 
-			//if (World.Tiles[Rows[Y][segment].Tile].Blocked)
-			//	return false;
+			if (World.Tiles[Rows[Y][segment].Tile].Blocked)
+				return false;
 
 			X = x;
 			PositionChanged?.Invoke();
 
+			Battle(segment);
 			Teleport(segment);
 
 			return true;
+		}
+
+		private static void Battle(int segment)
+		{
+			if (World.Tiles[World.Rows[Y].Segments[segment].Tile].Battle)
+			{
+				var random = new Random();
+
+				if (random.Next(256) < 10)
+				{
+					var domain = (X >> 5) | ((Y >> 2) & 0x38);
+
+					var formation = World.Domains[domain].Formations[random.Next(8)];
+
+					DataBattle.LoadFormation(formation.Formation, formation.Alternate);
+
+					PartyAttacked?.Invoke();
+				}
+			}
 		}
 
 		private static void Teleport(int segment)

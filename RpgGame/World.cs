@@ -9,6 +9,7 @@ namespace RpgGame
 		public static Tile[] Tiles = new Tile[128];
 		public static Teleport[] Teleports = new Teleport[32];
 		public static Row[] Rows;
+		public static Domain[] Domains = new Domain[64];
 			
 		public struct Row
 		{
@@ -45,6 +46,17 @@ namespace RpgGame
 			public int Map;
 			public int X;
 			public int Y;
+		}
+
+		public struct Domain
+		{
+			public DomainFormation[] Formations;
+		}
+
+		public struct DomainFormation
+		{
+			public int Formation;
+			public bool Alternate;
 		}
 	}
 }

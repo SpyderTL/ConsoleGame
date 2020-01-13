@@ -136,6 +136,18 @@ namespace ConsoleGame
 						InputRpgMap.Disable();
 						break;
 
+					case Game.GameMode.Battle:
+						RpgBattle.Load();
+
+						InputRpgBattle.Enable();
+						RpgBattle.Enable();
+
+						BattleScreen.Show();
+
+						RpgBattle.Disable();
+						InputRpgBattle.Disable();
+						break;
+
 					default:
 						Game.Mode = Game.GameMode.Intro;
 						break;

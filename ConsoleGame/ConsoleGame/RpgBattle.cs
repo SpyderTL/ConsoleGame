@@ -18,8 +18,20 @@ namespace ConsoleGame
 
 			for (var enemy = 0; enemy < Battle.Enemies.Length; enemy++)
 			{
-				Battle.Enemies[enemy] = new Battle.Character { Name = RpgGame.Battle.Enemies[enemy].Type.ToString() };
+				Battle.Enemies[enemy] = new Battle.Character { Name = RpgGame.Battle.EnemyTypes[RpgGame.Battle.Enemies[enemy].Type].Name };
 			}
+		}
+
+		internal static void UpdateOptions()
+		{
+			Battle.Options = RpgGame.Battle.AllyOptions.Select(x => x.Select(y => new Battle.Activity
+			{
+				Type = (Battle.ActivityType)y.Type,
+				Value = y.Value,
+				TargetType = (Battle.TargetType)y.TargetType,
+				Target = y.Target,
+			}).ToArray())
+			.ToArray();
 		}
 
 		internal static void UpdateActions()
@@ -42,13 +54,13 @@ namespace ConsoleGame
 
 		internal static void Enable()
 		{
-			RpgGame.Battle.BattleStarting += Battle_BattleStarted;
+			RpgGame.Battle.BattleStarting += Battle_BattleStarting;
 			RpgGame.Battle.BattleComplete += Battle_BattleComplete;
-			RpgGame.Battle.TurnStarting += Battle_TurnStarted;
+			RpgGame.Battle.TurnStarting += Battle_TurnStarting;
 			RpgGame.Battle.TurnComplete += Battle_TurnComplete;
 		}
 
-		private static void Battle_BattleStarted()
+		private static void Battle_BattleStarting()
 		{
 			Battle.Mode = Battle.BattleMode.BattleStarting;
 		}
@@ -58,14 +70,11 @@ namespace ConsoleGame
 			Battle.Mode = Battle.BattleMode.BattleComplete;
 		}
 
-		private static void Battle_TurnStarted()
+		private static void Battle_TurnStarting()
 		{
 			Battle.Mode = Battle.BattleMode.TurnStarting;
-		}
 
-		private static void Battle_TurnComplete()
-		{
-			Battle.Mode = Battle.BattleMode.TurnComplete;
+			UpdateOptions();
 
 			BattleMenu.Character = 0;
 
@@ -75,11 +84,23 @@ namespace ConsoleGame
 			BattleMenu.Update();
 		}
 
+		private static void Battle_TurnComplete()
+		{
+			Battle.Mode = Battle.BattleMode.TurnComplete;
+
+			BattleMenu.Character = -1;
+
+			BattleMenu.ActivityType = -1;
+			BattleMenu.Activity = -1;
+
+			BattleMenu.Update();
+		}
+
 		internal static void Disable()
 		{
-			RpgGame.Battle.BattleStarting -= Battle_BattleStarted;
+			RpgGame.Battle.BattleStarting -= Battle_BattleStarting;
 			RpgGame.Battle.BattleComplete -= Battle_BattleComplete;
-			RpgGame.Battle.TurnStarting -= Battle_TurnStarted;
+			RpgGame.Battle.TurnStarting -= Battle_TurnStarting;
 			RpgGame.Battle.TurnComplete -= Battle_TurnComplete;
 		}
 	}

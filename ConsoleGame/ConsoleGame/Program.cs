@@ -8,6 +8,8 @@ namespace ConsoleGame
 	{
 		static void Main(string[] args)
 		{
+			RpgGame.DataBattle.Load();
+
 			Screen.Enable();
 
 			KeyboardInput.Enable();
@@ -97,6 +99,13 @@ namespace ConsoleGame
 								RpgGame.PartyWorld.Refresh();
 
 								RpgParty.Refresh();
+
+								var random = new Random();
+
+								RpgGame.DataBattle.LoadFormation(random.Next(0, 128), random.Next(0, 2) == 1);
+
+								RpgBattle.Load();
+
 								Game.Mode = Game.GameMode.Battle;
 								break;
 
@@ -157,7 +166,11 @@ namespace ConsoleGame
 						InputBattle.Enable();
 						RpgBattle.Enable();
 
+						RpgGame.Battle.Enable();
+
 						BattleScreen.Show();
+
+						RpgGame.Battle.Disable();
 
 						RpgBattle.Disable();
 						InputBattle.Disable();

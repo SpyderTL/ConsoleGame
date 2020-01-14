@@ -6,7 +6,7 @@ namespace RpgGame
 {
 	public static class Party
 	{
-		public static Character[] Characters;
+		public static Character[] Characters = new Character[4];
 
 		public class Character
 		{

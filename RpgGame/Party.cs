@@ -11,9 +11,17 @@ namespace RpgGame
 		public class Character
 		{
 			public string Name;
-			public int Type;
+			public CharacterType Type;
 			public int Health;
+			public int MaxHealth;
 			public int Power;
+			public int MaxPower;
+		}
+
+		public enum CharacterType
+		{
+			Fighter,
+			BlackBelt
 		}
 	}
 }

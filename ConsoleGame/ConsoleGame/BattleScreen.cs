@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 
 namespace ConsoleGame
@@ -12,6 +13,7 @@ namespace ConsoleGame
 			Banner();
 
 			Draw();
+			Screen.Update();
 
 			Close.WaitOne();
 		}
@@ -31,6 +33,15 @@ namespace ConsoleGame
 			for (var enemy = 0; enemy < Battle.Enemies.Length; enemy++)
 			{
 				Screen.DrawString(Battle.Enemies[enemy].Name, 20, enemy);
+			}
+
+			if (BattleMenu.Character != -1)
+			{
+				Screen.FillRectangle(' ', BattleMenu.Character + 1, 11, BattleMenu.Character + BattleMenu.Items.Length, 20);
+				Screen.DrawRectangle('<', BattleMenu.Character, 10, BattleMenu.Character + BattleMenu.Items.Length + 1, 21);
+
+				for (var item = 0; item < BattleMenu.Items.Length; item++)
+					Screen.DrawString((item + 1).ToString() + ") " + BattleMenu.Items[item].Text, 12, BattleMenu.Character + item);
 			}
 		}
 

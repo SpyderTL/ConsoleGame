@@ -8,10 +8,10 @@ namespace ConsoleGame
 	{
 		internal static BattleMode Mode;
 		internal static Character[] Allies;
-		internal static Activity[][] AllyOptions;
-		internal static int[] AllyActions;
+		internal static Activity[][] Options;
+		internal static int[] Actions;
 		internal static Character[] Enemies;
-		internal static Event[] TurnEvents;
+		internal static Event[] Events;
 
 		internal class Character
 		{

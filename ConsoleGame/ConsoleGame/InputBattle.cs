@@ -2,7 +2,7 @@
 
 namespace ConsoleGame
 {
-	internal class InputRpgBattle
+	internal class InputBattle
 	{
 		internal static void Enable()
 		{
@@ -11,6 +11,9 @@ namespace ConsoleGame
 
 		private static void Input_KeyPressed(char key)
 		{
+			var index = key - '0';
+
+			BattleMenu.Select(index + 1);
 		}
 
 		internal static void Disable()

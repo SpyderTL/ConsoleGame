@@ -6,9 +6,9 @@ namespace RpgGame
 {
 	public static class Battle
 	{
-		public static event Action TurnStarted;
+		public static event Action TurnStarting;
 		public static event Action TurnComplete;
-		public static event Action BattleStarted;
+		public static event Action BattleStarting;
 		public static event Action BattleComplete;
 
 		public static Enemy[] Enemies;

@@ -65,10 +65,10 @@ namespace ConsoleGame
 						{
 							case 0:
 								// World
-								Party.Characters[0] = new Party.Character { Name = "Alpha", Health = 54, MaxHealth = 102, Power = 12, MaxPower = 88 };
-								Party.Characters[1] = new Party.Character { Name = "Beta", Health = 54, MaxHealth = 102, Power = 12, MaxPower = 88 };
-								Party.Characters[2] = new Party.Character { Name = "Gamma", Health = 54, MaxHealth = 102, Power = 12, MaxPower = 88 };
-								Party.Characters[3] = new Party.Character { Name = "Delta", Health = 54, MaxHealth = 102, Power = 12, MaxPower = 88 };
+								RpgGame.Party.Characters[0] = new RpgGame.Party.Character { Name = "Alpha", Type = RpgGame.Party.CharacterType.Fighter, Health = 54, MaxHealth = 102, Power = 12, MaxPower = 88 };
+								RpgGame.Party.Characters[1] = new RpgGame.Party.Character { Name = "Beta", Type = RpgGame.Party.CharacterType.Fighter, Health = 54, MaxHealth = 102, Power = 12, MaxPower = 88 };
+								RpgGame.Party.Characters[2] = new RpgGame.Party.Character { Name = "Gamma", Type = RpgGame.Party.CharacterType.Fighter, Health = 54, MaxHealth = 102, Power = 12, MaxPower = 88 };
+								RpgGame.Party.Characters[3] = new RpgGame.Party.Character { Name = "Delta", Type = RpgGame.Party.CharacterType.Fighter, Health = 54, MaxHealth = 102, Power = 12, MaxPower = 88 };
 
 								RpgGame.PartyWorld.X = 153;
 								RpgGame.PartyWorld.Y = 165;
@@ -77,11 +77,26 @@ namespace ConsoleGame
 
 								RpgGame.PartyWorld.Refresh();
 
+								RpgParty.Refresh();
+
 								Game.Mode = Game.GameMode.World;
 								break;
 
 							case 1:
 								// Battle
+								RpgGame.Party.Characters[0] = new RpgGame.Party.Character { Name = "Alpha", Type = RpgGame.Party.CharacterType.Fighter, Health = 54, MaxHealth = 102, Power = 12, MaxPower = 88 };
+								RpgGame.Party.Characters[1] = new RpgGame.Party.Character { Name = "Beta", Type = RpgGame.Party.CharacterType.Fighter, Health = 54, MaxHealth = 102, Power = 12, MaxPower = 88 };
+								RpgGame.Party.Characters[2] = new RpgGame.Party.Character { Name = "Gamma", Type = RpgGame.Party.CharacterType.Fighter, Health = 54, MaxHealth = 102, Power = 12, MaxPower = 88 };
+								RpgGame.Party.Characters[3] = new RpgGame.Party.Character { Name = "Delta", Type = RpgGame.Party.CharacterType.Fighter, Health = 54, MaxHealth = 102, Power = 12, MaxPower = 88 };
+
+								RpgGame.PartyWorld.X = 153;
+								RpgGame.PartyWorld.Y = 165;
+
+								RpgGame.DataWorld.Load();
+
+								RpgGame.PartyWorld.Refresh();
+
+								RpgParty.Refresh();
 								Game.Mode = Game.GameMode.Battle;
 								break;
 
@@ -139,13 +154,13 @@ namespace ConsoleGame
 					case Game.GameMode.Battle:
 						RpgBattle.Load();
 
-						InputRpgBattle.Enable();
+						InputBattle.Enable();
 						RpgBattle.Enable();
 
 						BattleScreen.Show();
 
 						RpgBattle.Disable();
-						InputRpgBattle.Disable();
+						InputBattle.Disable();
 						break;
 
 					default:

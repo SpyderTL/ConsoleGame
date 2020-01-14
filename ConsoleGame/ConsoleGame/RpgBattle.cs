@@ -24,12 +24,12 @@ namespace ConsoleGame
 
 		internal static void UpdateActions()
 		{
-			RpgGame.Battle.AllyActions = Battle.AllyActions;
+			RpgGame.Battle.AllyActions = Battle.Actions;
 		}
 
 		internal static void UpdateEvents()
 		{
-			Battle.TurnEvents = RpgGame.Battle.Events.Select(x => new Battle.Event
+			Battle.Events = RpgGame.Battle.Events.Select(x => new Battle.Event
 			{
 				Type = (Battle.EventType)x.Type,
 				SourceType = (Battle.SourceType)x.SourceType,
@@ -42,9 +42,9 @@ namespace ConsoleGame
 
 		internal static void Enable()
 		{
-			RpgGame.Battle.BattleStarted += Battle_BattleStarted;
+			RpgGame.Battle.BattleStarting += Battle_BattleStarted;
 			RpgGame.Battle.BattleComplete += Battle_BattleComplete;
-			RpgGame.Battle.TurnStarted += Battle_TurnStarted;
+			RpgGame.Battle.TurnStarting += Battle_TurnStarted;
 			RpgGame.Battle.TurnComplete += Battle_TurnComplete;
 		}
 
@@ -67,14 +67,19 @@ namespace ConsoleGame
 		{
 			Battle.Mode = Battle.BattleMode.TurnComplete;
 
+			BattleMenu.Character = 0;
 
+			BattleMenu.ActivityType = -1;
+			BattleMenu.Activity = -1;
+
+			BattleMenu.Update();
 		}
 
 		internal static void Disable()
 		{
-			RpgGame.Battle.BattleStarted -= Battle_BattleStarted;
+			RpgGame.Battle.BattleStarting -= Battle_BattleStarted;
 			RpgGame.Battle.BattleComplete -= Battle_BattleComplete;
-			RpgGame.Battle.TurnStarted -= Battle_TurnStarted;
+			RpgGame.Battle.TurnStarting -= Battle_TurnStarted;
 			RpgGame.Battle.TurnComplete -= Battle_TurnComplete;
 		}
 	}

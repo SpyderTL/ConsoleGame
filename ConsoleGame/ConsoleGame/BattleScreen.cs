@@ -25,6 +25,8 @@ namespace ConsoleGame
 
 		internal static void Draw()
 		{
+			Screen.Clear();
+
 			for (var ally = 0; ally < Battle.Allies.Length; ally++)
 			{
 				Screen.DrawString(Battle.Allies[ally].Name, 0, ally);
@@ -37,11 +39,11 @@ namespace ConsoleGame
 
 			if (BattleMenu.Character != -1)
 			{
-				Screen.FillRectangle(' ', BattleMenu.Character + 1, 11, BattleMenu.Character + BattleMenu.Items.Length, 20);
-				Screen.DrawRectangle('<', BattleMenu.Character, 10, BattleMenu.Character + BattleMenu.Items.Length + 1, 21);
+				Screen.FillRectangle(' ', BattleMenu.Character + 1, 7, BattleMenu.Character + BattleMenu.Items.Length + 2, 17);
+				Screen.DrawRectangle('<', BattleMenu.Character, 6, BattleMenu.Character + BattleMenu.Items.Length + 3, 18);
 
 				for (var item = 0; item < BattleMenu.Items.Length; item++)
-					Screen.DrawString((item + 1).ToString() + ") " + BattleMenu.Items[item].Text, 12, BattleMenu.Character + item);
+					Screen.DrawString((item + 1).ToString() + ") " + BattleMenu.Items[item].Text, 8, BattleMenu.Character + 2 + item);
 			}
 		}
 

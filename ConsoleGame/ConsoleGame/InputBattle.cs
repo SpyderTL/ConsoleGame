@@ -13,7 +13,7 @@ namespace ConsoleGame
 		{
 			var index = key - '0';
 
-			BattleMenu.Select(index + 1);
+			BattleMenu.Select(index - 1);
 		}
 
 		internal static void Disable()

@@ -20,6 +20,8 @@ namespace ConsoleGame
 			{
 				Battle.Enemies[enemy] = new Battle.Character { Name = RpgGame.Battle.EnemyTypes[RpgGame.Battle.Enemies[enemy].Type].Name };
 			}
+
+			Battle.Actions = Enumerable.Repeat(-1, Battle.Allies.Length).ToArray();
 		}
 
 		internal static void UpdateOptions()

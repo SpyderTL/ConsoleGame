@@ -24,11 +24,11 @@ namespace ConsoleGame
 					case -1:
 						Items = new MenuItem[]
 						{
-						new MenuItem { Text = "Attack", ActivityType = Battle.ActivityType.Attack, Option = -1 },
-						new MenuItem { Text = "Special", ActivityType = Battle.ActivityType.Special, Option = -1 },
-						new MenuItem { Text = "Magic", ActivityType = Battle.ActivityType.Magic, Option = -1 },
-						new MenuItem { Text = "Item", ActivityType = Battle.ActivityType.Item, Option = -1 },
-						new MenuItem { Text = "Run", ActivityType = Battle.ActivityType.Run, Option = Enumerable.Range(0, Battle.Options[Character].Length).First(x => Battle.Options[Character][x].Type == Battle.ActivityType.Run) },
+						new MenuItem { Text = "Attack", ActivityType = Battle.ActivityType.Attack, Activity = -1, Option = -1 },
+						new MenuItem { Text = "Special", ActivityType = Battle.ActivityType.Special, Activity = -1, Option = -1 },
+						new MenuItem { Text = "Magic", ActivityType = Battle.ActivityType.Magic, Activity = -1, Option = -1 },
+						new MenuItem { Text = "Item", ActivityType = Battle.ActivityType.Item, Activity = -1, Option = -1 },
+						new MenuItem { Text = "Run", ActivityType = Battle.ActivityType.Run, Activity = -1, Option = Enumerable.Range(0, Battle.Options[Character].Length).First(x => Battle.Options[Character][x].Type == Battle.ActivityType.Run) },
 						};
 						break;
 
@@ -76,14 +76,14 @@ namespace ConsoleGame
 			}
 		}
 
-		internal static void Select(int index)
+		internal static void Select(int item)
 		{
-			if (index >= Items.Length)
+			if (item >= Items.Length)
 				return;
 
-			if (Items[index].Option != -1)
+			if (Items[item].Option != -1)
 			{
-				Battle.Actions[Character] = Items[index].Option;
+				Battle.Actions[Character] = Items[item].Option;
 
 				RpgBattle.UpdateActions();
 
@@ -101,11 +101,14 @@ namespace ConsoleGame
 			}
 			else
 			{
-				ActivityType = (int)Items[index].ActivityType;
-				Activity = Items[index].Activity;
+				ActivityType = (int)Items[item].ActivityType;
+				Activity = Items[item].Activity;
 			}
 
 			Update();
+
+			BattleScreen.Draw();
+			Screen.Update();
 		}
 
 		internal struct MenuItem

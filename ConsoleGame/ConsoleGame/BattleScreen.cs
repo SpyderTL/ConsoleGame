@@ -79,5 +79,95 @@ namespace ConsoleGame
 			Screen.Clear();
 			Screen.Update();
 		}
+
+		internal static void DrawEvents()
+		{
+			foreach (var e in Battle.Events)
+			{
+				switch (e.Type)
+				{
+					case Battle.EventType.Attack:
+						Screen.FillRectangle(' ', 10, 7, 14, 15);
+						Screen.DrawRectangle('#', 9, 6, 15, 16);
+
+						Screen.DrawString(e.SourceType == Battle.SourceType.Ally ? Battle.Allies[e.Source].Name : Battle.Enemies[e.Source].Name, 8, 12);
+						Screen.Update();
+
+						Thread.Sleep(100);
+
+						Screen.FillRectangle(' ', 10, 18, 14, 26);
+						Screen.DrawRectangle('#', 9, 17, 15, 27);
+
+						Screen.DrawString(e.TargetType == Battle.TargetType.Ally ? Battle.Allies[e.Target].Name : Battle.Enemies[e.Target].Name, 19, 12);
+						Screen.Update();
+
+						Thread.Sleep(100);
+						break;
+
+					case Battle.EventType.Special:
+						break;
+
+					case Battle.EventType.Magic:
+						break;
+
+					case Battle.EventType.Item:
+						break;
+
+					case Battle.EventType.Run:
+						break;
+
+					case Battle.EventType.Miss:
+						Screen.FillRectangle(' ', 17, 7, 21, 15);
+						Screen.DrawRectangle('#', 16, 6, 22, 16);
+
+						Screen.DrawString("MISS", 8, 19);
+						Screen.Update();
+
+						Thread.Sleep(1500);
+
+						Draw();
+						Screen.Update();
+
+						Thread.Sleep(500);
+						break;
+
+					case Battle.EventType.Health:
+						Screen.FillRectangle(' ', 17, 7, 21, 15);
+						Screen.DrawRectangle('#', 16, 6, 22, 16);
+
+						Screen.DrawString(e.Value.ToString() + " HP", 8, 19);
+						Screen.Update();
+
+						Thread.Sleep(1500);
+
+						Draw();
+						Screen.Update();
+
+						Thread.Sleep(500);
+						break;
+
+					case Battle.EventType.Power:
+						break;
+
+					case Battle.EventType.Inflict:
+						break;
+
+					case Battle.EventType.Cure:
+						break;
+
+					case Battle.EventType.Resist:
+						break;
+
+					case Battle.EventType.Weak:
+						break;
+
+					case Battle.EventType.Escape:
+						break;
+
+					case Battle.EventType.Trapped:
+						break;
+				}
+			}
+		}
 	}
 }

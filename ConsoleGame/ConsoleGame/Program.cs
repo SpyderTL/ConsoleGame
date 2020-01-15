@@ -105,6 +105,7 @@ namespace ConsoleGame
 								RpgGame.DataBattle.LoadFormation(random.Next(0, 128), random.Next(0, 2) == 1);
 
 								RpgBattle.Load();
+								RpgGame.BattleLogic.Enable();
 
 								Game.Mode = Game.GameMode.Battle;
 								break;

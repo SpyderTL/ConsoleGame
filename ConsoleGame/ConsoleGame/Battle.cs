@@ -83,7 +83,9 @@ namespace ConsoleGame
 			Inflict,
 			Cure,
 			Resist,
-			Weak
+			Weak,
+			Escape,
+			Trapped
 		}
 
 		internal enum BattleMode

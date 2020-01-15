@@ -74,6 +74,8 @@ namespace ConsoleGame
 
 		private static void Battle_TurnStarting()
 		{
+			var mode = Battle.Mode;
+
 			Battle.Mode = Battle.BattleMode.TurnStarting;
 
 			UpdateOptions();
@@ -84,6 +86,12 @@ namespace ConsoleGame
 			BattleMenu.Activity = -1;
 
 			BattleMenu.Update();
+
+			if (mode != Battle.BattleMode.BattleStarting)
+			{
+				BattleScreen.Draw();
+				Screen.Update();
+			}
 		}
 
 		private static void Battle_TurnComplete()
@@ -96,6 +104,9 @@ namespace ConsoleGame
 			BattleMenu.Activity = -1;
 
 			BattleMenu.Update();
+
+			UpdateEvents();
+			BattleScreen.DrawEvents();
 		}
 
 		internal static void Disable()

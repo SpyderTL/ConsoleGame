@@ -39,7 +39,7 @@ namespace RpgGame
 
 			TurnStarting?.Invoke();
 
-			Timer = new System.Threading.Timer(Timer_Callback, null, 0, 1000);
+			Timer = new System.Threading.Timer(Timer_Callback, null, 1000, 1000);
 		}
 
 		private static void UpdateOptions()
@@ -69,10 +69,29 @@ namespace RpgGame
 
 		public static void UpdateEvents()
 		{
+			var events = new List<Event>();
+
+			for (var ally = 0; ally < AllyActions.Length; ally++)
+			{
+				events.Add(new Event { Type = (EventType)AllyOptions[ally][AllyActions[ally]].Type, SourceType = SourceType.Ally, Source = ally, Target = AllyOptions[ally][AllyActions[ally]].Target, TargetType = AllyOptions[ally][AllyActions[ally]].TargetType, Value = AllyOptions[ally][AllyActions[ally]].Value });
+
+				events.Add(new Event { Type = EventType.Miss });
+			}
+
+			for (var enemy = 0; enemy < EnemyActions.Length; enemy++)
+			{
+				events.Add(new Event { Type = (EventType)EnemyOptions[enemy][EnemyActions[enemy]].Type, SourceType = SourceType.Enemy, Source = enemy, Target = EnemyOptions[enemy][EnemyActions[enemy]].Target, TargetType = EnemyOptions[enemy][EnemyActions[enemy]].TargetType, Value = EnemyOptions[enemy][EnemyActions[enemy]].Value });
+
+				events.Add(new Event { Type = EventType.Miss });
+			}
+
+			Events = events.ToArray();
 		}
 
 		private static void Timer_Callback(object state)
 		{
+			Timer.Change(System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite);
+
 			if (AllyActions.All(x => x != -1) &&
 				EnemyActions.All(x => x != -1))
 			{
@@ -82,11 +101,13 @@ namespace RpgGame
 
 				if (Party.Characters.All(x => x.Health == 0))
 				{
+					Disable();
 					Result = BattleResults.Defeat;
 					BattleComplete?.Invoke();
 				}
 				else if (Enemies.All(x => x.Health == 0))
 				{
+					Disable();
 					Result = BattleResults.Victory;
 					BattleComplete?.Invoke();
 				}
@@ -95,8 +116,12 @@ namespace RpgGame
 					UpdateOptions();
 
 					TurnStarting?.Invoke();
+
+					Timer.Change(1000, 1000);
 				}
 			}
+			else
+				Timer.Change(1000, 1000);
 		}
 
 		public static void Disable()
@@ -169,7 +194,9 @@ namespace RpgGame
 			Inflict,
 			Cure,
 			Resist,
-			Weak
+			Weak,
+			Escape,
+			Trapped
 		}
 
 		public enum BattleResults

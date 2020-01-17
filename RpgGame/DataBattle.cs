@@ -38,18 +38,18 @@ namespace RpgGame
 
 				for (var logic = 0; logic < 128; logic++)
 				{
-					Battle.LogicTypes[logic].Magic = reader.ReadByte();
-					Battle.LogicTypes[logic].Special = reader.ReadByte();
+					Battle.LogicTypes[logic].Spell = reader.ReadByte();
+					Battle.LogicTypes[logic].Ability = reader.ReadByte();
 
-					Battle.LogicTypes[logic].MagicOptions = new int[9];
+					Battle.LogicTypes[logic].Spells = new int[9];
 
 					for (var magic = 0; magic < 9; magic++)
-						Battle.LogicTypes[logic].MagicOptions[magic] = reader.ReadByte();
+						Battle.LogicTypes[logic].Spells[magic] = reader.ReadByte();
 
-					Battle.LogicTypes[logic].SpecialOptions = new int[5];
+					Battle.LogicTypes[logic].Abilities = new int[5];
 
-					for (var special = 0; special < 5; special++)
-						Battle.LogicTypes[logic].SpecialOptions[special] = reader.ReadByte();
+					for (var ability = 0; ability < 5; ability++)
+						Battle.LogicTypes[logic].Abilities[ability] = reader.ReadByte();
 				}
 
 				reader.BaseStream.Position = Data.Address(0x0B, 0x94E0);
@@ -66,6 +66,107 @@ namespace RpgGame
 					reader.BaseStream.Position = Data.Address(0x0B, addresses[enemy]);
 
 					Battle.EnemyTypes[enemy].Name = reader.ReadName();
+				}
+
+				reader.BaseStream.Position = Data.Address(0x0C, 0x81E0);
+
+				for (var spell = 0; spell < 64; spell++)
+				{
+					Battle.SpellTypes[spell].Hit = reader.ReadByte();
+
+					var value = reader.ReadByte();
+
+					Battle.SpellTypes[spell].Elements = (Battle.Elements)reader.ReadByte();
+					Battle.SpellTypes[spell].Target = (Battle.MagicTarget)reader.ReadByte();
+					Battle.SpellTypes[spell].Effect = (Battle.MagicEffect)reader.ReadByte();
+					Battle.SpellTypes[spell].Graphic = reader.ReadByte();
+					Battle.SpellTypes[spell].Palette = reader.ReadByte();
+					Battle.SpellTypes[spell].Reserved = reader.ReadByte();
+
+					switch (Battle.SpellTypes[spell].Effect)
+					{
+						case Battle.MagicEffect.Resist:
+						case Battle.MagicEffect.Weak:
+							Battle.SpellTypes[spell].EffectElements = (Battle.Elements)value;
+							break;
+
+						case Battle.MagicEffect.Status:
+						case Battle.MagicEffect.Status2:
+						case Battle.MagicEffect.Cure:
+						case Battle.MagicEffect.CureAll:
+							Battle.SpellTypes[spell].EffectStatus = (Battle.Status)value;
+							break;
+
+						default:
+							Battle.SpellTypes[spell].Value = value;
+							break;
+					}
+				}
+
+				for (var potion = 0; potion < 2; potion++)
+				{
+					Battle.PotionTypes[potion].Hit = reader.ReadByte();
+
+					var value = reader.ReadByte();
+
+					Battle.PotionTypes[potion].Elements = (Battle.Elements)reader.ReadByte();
+					Battle.PotionTypes[potion].Target = (Battle.MagicTarget)reader.ReadByte();
+					Battle.PotionTypes[potion].Effect = (Battle.MagicEffect)reader.ReadByte();
+					Battle.PotionTypes[potion].Graphic = reader.ReadByte();
+					Battle.PotionTypes[potion].Palette = reader.ReadByte();
+					Battle.PotionTypes[potion].Reserved = reader.ReadByte();
+
+					switch (Battle.PotionTypes[potion].Effect)
+					{
+						case Battle.MagicEffect.Resist:
+						case Battle.MagicEffect.Weak:
+							Battle.PotionTypes[potion].EffectElements = (Battle.Elements)value;
+							break;
+
+						case Battle.MagicEffect.Status:
+						case Battle.MagicEffect.Status2:
+						case Battle.MagicEffect.Cure:
+						case Battle.MagicEffect.CureAll:
+							Battle.PotionTypes[potion].EffectStatus = (Battle.Status)value;
+							break;
+
+						default:
+							Battle.PotionTypes[potion].Value = value;
+							break;
+					}
+				}
+
+				for (var ability = 0; ability < 26; ability++)
+				{
+					Battle.AbilityTypes[ability].Hit = reader.ReadByte();
+
+					var value = reader.ReadByte();
+
+					Battle.AbilityTypes[ability].Elements = (Battle.Elements)reader.ReadByte();
+					Battle.AbilityTypes[ability].Target = (Battle.MagicTarget)reader.ReadByte();
+					Battle.AbilityTypes[ability].Effect = (Battle.MagicEffect)reader.ReadByte();
+					Battle.AbilityTypes[ability].Graphic = reader.ReadByte();
+					Battle.AbilityTypes[ability].Palette = reader.ReadByte();
+					Battle.AbilityTypes[ability].Reserved = reader.ReadByte();
+
+					switch (Battle.AbilityTypes[ability].Effect)
+					{
+						case Battle.MagicEffect.Resist:
+						case Battle.MagicEffect.Weak:
+							Battle.AbilityTypes[ability].EffectElements = (Battle.Elements)value;
+							break;
+
+						case Battle.MagicEffect.Status:
+						case Battle.MagicEffect.Status2:
+						case Battle.MagicEffect.Cure:
+						case Battle.MagicEffect.CureAll:
+							Battle.AbilityTypes[ability].EffectStatus = (Battle.Status)value;
+							break;
+
+						default:
+							Battle.AbilityTypes[ability].Value = value;
+							break;
+					}
 				}
 			}
 		}

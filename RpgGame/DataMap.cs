@@ -82,7 +82,7 @@ namespace RpgGame
 
 					Map.Items[item].Name = reader.ReadText();
 
-					if (item > 0x16)
+					if (item < 0x16)
 						Map.Items[item].Type = Map.ItemType.Special;
 					else if (item < 0x1C)
 						Map.Items[item].Type = Map.ItemType.Item;

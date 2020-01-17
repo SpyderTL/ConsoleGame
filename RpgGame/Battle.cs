@@ -22,6 +22,9 @@ namespace RpgGame
 
 		public static EnemyType[] EnemyTypes = new EnemyType[128];
 		public static LogicType[] LogicTypes = new LogicType[128];
+		public static MagicType[] SpellTypes = new MagicType[64];
+		public static MagicType[] PotionTypes = new MagicType[2];
+		public static MagicType[] AbilityTypes = new MagicType[26];
 
 		public static System.Threading.Timer Timer;
 
@@ -60,9 +63,48 @@ namespace RpgGame
 				var options = new List<Activity>();
 
 				options.AddRange(Enumerable.Range(0, Party.Characters.Length).Select(x => new Activity { Type = ActivityType.Attack, TargetType = TargetType.Ally, Target = x }));
-				options.Add(new Activity { Type = ActivityType.Run });
+				// Should this be here?
+				//options.Add(new Activity { Type = ActivityType.Run });
+
+				var enemyType = EnemyTypes[Enemies[enemy].Type];
+
+				if (enemyType.Logic != 0xFF)
+				{
+					var logicType = LogicTypes[enemyType.Logic];
+
+					foreach (var spell in logicType.Spells)
+					{
+						if (spell != 0xFF)
+						{
+							var spellType = SpellTypes[spell];
+
+							switch (spellType.Target)
+							{
+								case MagicTarget.Enemy:
+									options.AddRange(Enumerable.Range(0, Party.Characters.Length).Select(x => new Activity { Type = ActivityType.Spell, Value = spell, TargetType = TargetType.Ally, Target = x }));
+									break;
+							}
+						}
+					}
+
+					foreach (var ability in logicType.Abilities)
+					{
+						if (ability != 0xFF)
+						{
+							var abilityType = AbilityTypes[ability];
+
+							switch (abilityType.Target)
+							{
+								case MagicTarget.Enemy:
+									options.AddRange(Enumerable.Range(0, Party.Characters.Length).Select(x => new Activity { Type = ActivityType.Ability, Value = ability, TargetType = TargetType.Ally, Target = x }));
+									break;
+							}
+						}
+					}
+				}
 
 				EnemyOptions[enemy] = options.ToArray();
+
 				EnemyActions[enemy] = -1;
 			}
 		}
@@ -151,8 +193,8 @@ namespace RpgGame
 		public enum ActivityType
 		{
 			Attack,
-			Special,
-			Magic,
+			Ability,
+			Spell,
 			Item,
 			Run
 		}
@@ -259,10 +301,72 @@ namespace RpgGame
 
 		public struct LogicType
 		{
-			public int Magic;
-			public int Special;
-			public int[] MagicOptions;
-			public int[] SpecialOptions;
+			public int Spell;
+			public int Ability;
+			public int[] Spells;
+			public int[] Abilities;
+		}
+
+		public struct MagicType
+		{
+			public int Hit;
+			public int Value;
+			public Elements Elements;
+			public MagicTarget Target;
+			public MagicEffect Effect;
+			public Elements EffectElements;
+			public Status EffectStatus;
+			public int Graphic;
+			public int Palette;
+			public int Reserved;
+		}
+
+		[Flags]
+		public enum MagicTarget
+		{
+			None = 0,
+			Enemies = 1,
+			Enemy = 2,
+			Self = 4,
+			Allies = 8,
+			Ally = 16
+		}
+
+		public enum MagicEffect
+		{
+			None,
+			Damage,
+			Holy,
+			Status,
+			Slow,
+			Fear,
+			Health,
+			Health2,
+			Cure,
+			Absorb,
+			Resist,
+			Attack,
+			Fast,
+			Attack2,
+			Stun,
+			CureAll,
+			Evade,
+			Weak,
+			Status2
+		}
+
+		[Flags]
+		public enum Status
+		{
+			None = 0,
+			Dead = 1,
+			Stone = 2,
+			Poison = 4,
+			Dark = 8,
+			Stun = 16,
+			Sleep = 32,
+			Mute = 64,
+			Confused = 128
 		}
 	}
 }

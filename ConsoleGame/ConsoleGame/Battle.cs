@@ -72,9 +72,9 @@ namespace ConsoleGame
 
 		public enum EventType
 		{
-			Attack,
-			Special,
-			Magic,
+			Hit,
+			Ability,
+			Spell,
 			Item,
 			Run,
 			Miss,

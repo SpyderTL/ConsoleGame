@@ -113,18 +113,88 @@ namespace RpgGame
 		{
 			var events = new List<Event>();
 
-			for (var ally = 0; ally < AllyActions.Length; ally++)
+			var characters = Party.Characters.Select((x, i) => new
 			{
-				events.Add(new Event { Type = (EventType)AllyOptions[ally][AllyActions[ally]].Type, SourceType = SourceType.Ally, Source = ally, Target = AllyOptions[ally][AllyActions[ally]].Target, TargetType = AllyOptions[ally][AllyActions[ally]].TargetType, Value = AllyOptions[ally][AllyActions[ally]].Value });
+				Action = AllyOptions[i][AllyActions[i]],
+				Source = i,
+				SourceType = SourceType.Ally,
+				Hit = 0,
+				Hits = 1,
+				Damage = 10,
+				Evade = AllyOptions[i][AllyActions[i]].TargetType == TargetType.Enemy ? EnemyTypes[Enemies[AllyOptions[i][AllyActions[i]].Target].Type].Evade : 0
+			}).Concat(Enemies.Select((x, i) => new
+			{
+				Action = EnemyOptions[i][EnemyActions[i]],
+				Source = i,
+				SourceType = SourceType.Enemy,
+				EnemyTypes[Enemies[i].Type].Hit,
+				EnemyTypes[Enemies[i].Type].Hits,
+				EnemyTypes[Enemies[i].Type].Damage,
+				Evade = AllyOptions[i][AllyActions[i]].TargetType == TargetType.Enemy ? EnemyTypes[Enemies[AllyOptions[i][AllyActions[i]].Target].Type].Evade : 0
+			})).ToArray();
 
-				events.Add(new Event { Type = EventType.Miss });
+			var random = new Random();
+
+			for (var x = 0; x < 16; x++)
+			{
+				var a = random.Next(0, characters.Length);
+				var b = random.Next(0, characters.Length);
+
+				var temp = characters[a];
+				characters[a] = characters[b];
+				characters[b] = temp;
 			}
 
-			for (var enemy = 0; enemy < EnemyActions.Length; enemy++)
+			foreach (var character in characters)
 			{
-				events.Add(new Event { Type = (EventType)EnemyOptions[enemy][EnemyActions[enemy]].Type, SourceType = SourceType.Enemy, Source = enemy, Target = EnemyOptions[enemy][EnemyActions[enemy]].Target, TargetType = EnemyOptions[enemy][EnemyActions[enemy]].TargetType, Value = EnemyOptions[enemy][EnemyActions[enemy]].Value });
+				switch (character.Action.Type)
+				{
+					case ActivityType.Attack:
+						var hits = 0;
+						var damage = 0;
 
-				events.Add(new Event { Type = EventType.Miss });
+						for (var hit = 0; hit < character.Hits; hit++)
+						{
+							var chance = 168 + character.Hit - character.Evade;
+
+							if (random.Next(200) + 1 < chance)
+							{
+								hits++;
+
+								damage += character.Damage;
+								damage += random.Next(character.Damage) + 1;
+							}
+						}
+
+						if(hits != 0)
+						{
+							events.Add(new Event { Type = EventType.Hit, Source = character.Source, SourceType = character.SourceType, Target = character.Action.Target, TargetType = character.Action.TargetType, Value = hits });
+
+							events.Add(new Event { Type = EventType.Health, Source = character.Source, SourceType = character.SourceType, Target = character.Action.Target, TargetType = character.Action.TargetType, Value = -damage });
+						}
+						else
+							events.Add(new Event { Type = EventType.Miss, Source = character.Source, SourceType = character.SourceType, Target = character.Action.Target, TargetType = character.Action.TargetType });
+						break;
+
+					case ActivityType.Ability:
+						events.Add(new Event { Type = EventType.Ability, Source = character.Source, SourceType = character.SourceType, Target = character.Action.Target, TargetType = character.Action.TargetType, Value = character.Action.Value });
+						break;
+
+					case ActivityType.Spell:
+						events.Add(new Event { Type = EventType.Spell, Source = character.Source, SourceType = character.SourceType, Target = character.Action.Target, TargetType = character.Action.TargetType, Value = character.Action.Value });
+						break;
+
+					case ActivityType.Item:
+						events.Add(new Event { Type = EventType.Item, Source = character.Source, SourceType = character.SourceType, Target = character.Action.Target, TargetType = character.Action.TargetType, Value = character.Action.Value });
+						break;
+
+					case ActivityType.Run:
+						if(random.Next(2) == 0)
+							events.Add(new Event { Type = EventType.Escape, Source = character.Source, SourceType = character.SourceType, Target = character.Action.Target, TargetType = character.Action.TargetType });
+						else
+							events.Add(new Event { Type = EventType.Trapped, Source = character.Source, SourceType = character.SourceType, Target = character.Action.Target, TargetType = character.Action.TargetType });
+						break;
+				}
 			}
 
 			Events = events.ToArray();
@@ -225,9 +295,9 @@ namespace RpgGame
 
 		public enum EventType
 		{
-			Attack,
-			Special,
-			Magic,
+			Hit,
+			Ability,
+			Spell,
 			Item,
 			Run,
 			Miss,

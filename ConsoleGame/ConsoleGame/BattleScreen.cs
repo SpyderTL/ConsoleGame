@@ -86,7 +86,7 @@ namespace ConsoleGame
 			{
 				switch (e.Type)
 				{
-					case Battle.EventType.Attack:
+					case Battle.EventType.Hit:
 						Screen.FillRectangle(' ', 10, 7, 14, 15);
 						Screen.DrawRectangle('#', 9, 6, 15, 16);
 
@@ -101,22 +101,106 @@ namespace ConsoleGame
 						Screen.DrawString(e.TargetType == Battle.TargetType.Ally ? Battle.Allies[e.Target].Name : Battle.Enemies[e.Target].Name, 19, 12);
 						Screen.Update();
 
+						Thread.Sleep(500);
+
+						Screen.FillRectangle(' ', 17, 7, 21, 15);
+						Screen.DrawRectangle('#', 16, 6, 22, 16);
+
+						Screen.DrawString(e.Value.ToString() + " Hit", 8, 19);
+						Screen.Update();
+
+						Thread.Sleep(500);
+						break;
+
+					case Battle.EventType.Ability:
+						Screen.FillRectangle(' ', 10, 7, 14, 15);
+						Screen.DrawRectangle('#', 9, 6, 15, 16);
+
+						Screen.DrawString(e.SourceType == Battle.SourceType.Ally ? Battle.Allies[e.Source].Name : Battle.Enemies[e.Source].Name, 8, 12);
+						Screen.Update();
+
 						Thread.Sleep(100);
+
+						Screen.FillRectangle(' ', 10, 18, 14, 26);
+						Screen.DrawRectangle('#', 9, 17, 15, 27);
+
+						Screen.DrawString(e.TargetType == Battle.TargetType.Ally ? Battle.Allies[e.Target].Name : Battle.Enemies[e.Target].Name, 19, 12);
+						Screen.Update();
+
+						Thread.Sleep(500);
 						break;
 
-					case Battle.EventType.Special:
-						break;
+					case Battle.EventType.Spell:
+						Screen.FillRectangle(' ', 10, 7, 14, 15);
+						Screen.DrawRectangle('#', 9, 6, 15, 16);
 
-					case Battle.EventType.Magic:
+						Screen.DrawString(e.SourceType == Battle.SourceType.Ally ? Battle.Allies[e.Source].Name : Battle.Enemies[e.Source].Name, 8, 12);
+						Screen.Update();
+
+						Thread.Sleep(100);
+
+						Screen.FillRectangle(' ', 10, 18, 14, 26);
+						Screen.DrawRectangle('#', 9, 17, 15, 27);
+
+						Screen.DrawString(e.TargetType == Battle.TargetType.Ally ? Battle.Allies[e.Target].Name : Battle.Enemies[e.Target].Name, 19, 12);
+						Screen.Update();
+
+						Thread.Sleep(500);
 						break;
 
 					case Battle.EventType.Item:
+						Screen.FillRectangle(' ', 10, 7, 14, 15);
+						Screen.DrawRectangle('#', 9, 6, 15, 16);
+
+						Screen.DrawString(e.SourceType == Battle.SourceType.Ally ? Battle.Allies[e.Source].Name : Battle.Enemies[e.Source].Name, 8, 12);
+						Screen.Update();
+
+						Thread.Sleep(100);
+
+						Screen.FillRectangle(' ', 10, 18, 14, 26);
+						Screen.DrawRectangle('#', 9, 17, 15, 27);
+
+						Screen.DrawString(e.TargetType == Battle.TargetType.Ally ? Battle.Allies[e.Target].Name : Battle.Enemies[e.Target].Name, 19, 12);
+						Screen.Update();
+
+						Thread.Sleep(500);
 						break;
 
 					case Battle.EventType.Run:
+						Screen.FillRectangle(' ', 10, 7, 14, 15);
+						Screen.DrawRectangle('#', 9, 6, 15, 16);
+
+						Screen.DrawString(e.SourceType == Battle.SourceType.Ally ? Battle.Allies[e.Source].Name : Battle.Enemies[e.Source].Name, 8, 12);
+						Screen.Update();
+
+						Thread.Sleep(100);
+
+						Screen.FillRectangle(' ', 10, 18, 14, 26);
+						Screen.DrawRectangle('#', 9, 17, 15, 27);
+
+						Screen.DrawString("Run Away", 19, 12);
+						Screen.Update();
+
+						Thread.Sleep(500);
 						break;
 
 					case Battle.EventType.Miss:
+						Screen.FillRectangle(' ', 10, 7, 14, 15);
+						Screen.DrawRectangle('#', 9, 6, 15, 16);
+
+						Screen.DrawString(e.SourceType == Battle.SourceType.Ally ? Battle.Allies[e.Source].Name : Battle.Enemies[e.Source].Name, 8, 12);
+						Screen.Update();
+
+						Thread.Sleep(100);
+
+						Screen.FillRectangle(' ', 10, 18, 14, 26);
+						Screen.DrawRectangle('#', 9, 17, 15, 27);
+
+						Screen.DrawString(e.TargetType == Battle.TargetType.Ally ? Battle.Allies[e.Target].Name : Battle.Enemies[e.Target].Name, 19, 12);
+						Screen.Update();
+
+						Thread.Sleep(500);
+
 						Screen.FillRectangle(' ', 17, 7, 21, 15);
 						Screen.DrawRectangle('#', 16, 6, 22, 16);
 
@@ -132,10 +216,10 @@ namespace ConsoleGame
 						break;
 
 					case Battle.EventType.Health:
-						Screen.FillRectangle(' ', 17, 7, 21, 15);
-						Screen.DrawRectangle('#', 16, 6, 22, 16);
+						Screen.FillRectangle(' ', 17, 18, 21, 26);
+						Screen.DrawRectangle('#', 16, 17, 22, 27);
 
-						Screen.DrawString(e.Value.ToString() + " HP", 8, 19);
+						Screen.DrawString(Math.Abs(e.Value).ToString() + " HP", 19, 19);
 						Screen.Update();
 
 						Thread.Sleep(1500);
@@ -162,9 +246,23 @@ namespace ConsoleGame
 						break;
 
 					case Battle.EventType.Escape:
+						Screen.FillRectangle(' ', 17, 7, 21, 15);
+						Screen.DrawRectangle('#', 16, 6, 22, 16);
+
+						Screen.DrawString("Escaped!", 8, 19);
+						Screen.Update();
+
+						Thread.Sleep(1500);
 						break;
 
 					case Battle.EventType.Trapped:
+						Screen.FillRectangle(' ', 17, 7, 21, 15);
+						Screen.DrawRectangle('#', 16, 6, 22, 16);
+
+						Screen.DrawString("Trapped!", 8, 19);
+						Screen.Update();
+
+						Thread.Sleep(1500);
 						break;
 				}
 			}

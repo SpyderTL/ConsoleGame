@@ -23,7 +23,7 @@ namespace RpgGame
 					Battle.EnemyTypes[enemy].Evade = reader.ReadByte();
 					Battle.EnemyTypes[enemy].Absorb = reader.ReadByte();
 					Battle.EnemyTypes[enemy].Hits = reader.ReadByte();
-					Battle.EnemyTypes[enemy].Hit = reader.ReadByte();
+					Battle.EnemyTypes[enemy].Accuracy = reader.ReadByte();
 					Battle.EnemyTypes[enemy].Damage = reader.ReadByte();
 					Battle.EnemyTypes[enemy].Critical = reader.ReadByte();
 					Battle.EnemyTypes[enemy].Reserved = reader.ReadByte();

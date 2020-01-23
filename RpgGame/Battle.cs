@@ -51,7 +51,7 @@ namespace RpgGame
 			{
 				var options = new List<Activity>();
 
-				options.AddRange(Enumerable.Range(0, Enemies.Length).Select(x => new Activity { Type = ActivityType.Attack, TargetType = TargetType.Enemy, Target = x }));
+				options.AddRange(Enemies.Select((x, i) => new Activity { Type = ActivityType.Attack, TargetType = TargetType.Enemy, Target = i }));
 				options.Add(new Activity { Type = ActivityType.Run });
 
 				AllyOptions[ally] = options.ToArray();
@@ -62,7 +62,7 @@ namespace RpgGame
 			{
 				var options = new List<Activity>();
 
-				options.AddRange(Enumerable.Range(0, Party.Characters.Length).Select(x => new Activity { Type = ActivityType.Attack, TargetType = TargetType.Ally, Target = x }));
+				options.AddRange(Party.Characters.Select((x, i) => new Activity { Type = ActivityType.Attack, TargetType = TargetType.Ally, Target = i }));
 				// Should this be here?
 				//options.Add(new Activity { Type = ActivityType.Run });
 
@@ -81,7 +81,7 @@ namespace RpgGame
 							switch (spellType.Target)
 							{
 								case MagicTarget.Enemy:
-									options.AddRange(Enumerable.Range(0, Party.Characters.Length).Select(x => new Activity { Type = ActivityType.Spell, Value = spell, TargetType = TargetType.Ally, Target = x }));
+									options.AddRange(Party.Characters.Select((x, i) => new Activity { Type = ActivityType.Spell, Value = spell, TargetType = TargetType.Ally, Target = i }));
 									break;
 							}
 						}
@@ -96,7 +96,7 @@ namespace RpgGame
 							switch (abilityType.Target)
 							{
 								case MagicTarget.Enemy:
-									options.AddRange(Enumerable.Range(0, Party.Characters.Length).Select(x => new Activity { Type = ActivityType.Ability, Value = ability, TargetType = TargetType.Ally, Target = x }));
+									options.AddRange(Party.Characters.Select((x, i) => new Activity { Type = ActivityType.Ability, Value = ability, TargetType = TargetType.Ally, Target = i }));
 									break;
 							}
 						}
@@ -118,7 +118,7 @@ namespace RpgGame
 				Action = AllyOptions[i][AllyActions[i]],
 				Source = i,
 				SourceType = SourceType.Ally,
-				Hit = 0,
+				Accuracy = 0,
 				Hits = 1,
 				Damage = 10,
 				Evade = AllyOptions[i][AllyActions[i]].TargetType == TargetType.Enemy ? EnemyTypes[Enemies[AllyOptions[i][AllyActions[i]].Target].Type].Evade : 0
@@ -127,10 +127,10 @@ namespace RpgGame
 				Action = EnemyOptions[i][EnemyActions[i]],
 				Source = i,
 				SourceType = SourceType.Enemy,
-				EnemyTypes[Enemies[i].Type].Hit,
+				EnemyTypes[Enemies[i].Type].Accuracy,
 				EnemyTypes[Enemies[i].Type].Hits,
 				EnemyTypes[Enemies[i].Type].Damage,
-				Evade = AllyOptions[i][AllyActions[i]].TargetType == TargetType.Enemy ? EnemyTypes[Enemies[AllyOptions[i][AllyActions[i]].Target].Type].Evade : 0
+				Evade = EnemyOptions[i][EnemyActions[i]].TargetType == TargetType.Enemy ? EnemyTypes[Enemies[EnemyOptions[i][EnemyActions[i]].Target].Type].Evade : 0
 			})).ToArray();
 
 			var random = new Random();
@@ -155,7 +155,7 @@ namespace RpgGame
 
 						for (var hit = 0; hit < character.Hits; hit++)
 						{
-							var chance = 168 + character.Hit - character.Evade;
+							var chance = 168 + character.Accuracy - character.Evade;
 
 							if (random.Next(200) + 1 < chance)
 							{
@@ -177,15 +177,39 @@ namespace RpgGame
 						break;
 
 					case ActivityType.Ability:
-						events.Add(new Event { Type = EventType.Ability, Source = character.Source, SourceType = character.SourceType, Target = character.Action.Target, TargetType = character.Action.TargetType, Value = character.Action.Value });
-						break;
-
 					case ActivityType.Spell:
-						events.Add(new Event { Type = EventType.Spell, Source = character.Source, SourceType = character.SourceType, Target = character.Action.Target, TargetType = character.Action.TargetType, Value = character.Action.Value });
-						break;
-
 					case ActivityType.Item:
-						events.Add(new Event { Type = EventType.Item, Source = character.Source, SourceType = character.SourceType, Target = character.Action.Target, TargetType = character.Action.TargetType, Value = character.Action.Value });
+						events.Add(new Event { Type = (EventType)character.Action.Type, Source = character.Source, SourceType = character.SourceType, Target = character.Action.Target, TargetType = character.Action.TargetType, Value = character.Action.Value });
+
+						switch (AbilityTypes[character.Action.Value].Effect)
+						{
+							case MagicEffect.Damage:
+								var ability = AbilityTypes[character.Action.Value];
+
+								damage = ability.Value;
+								damage += random.Next(ability.Value) + 1;
+
+								switch (character.Action.TargetType)
+								{
+									case TargetType.Ally:
+									case TargetType.Enemy:
+										events.Add(new Event { Type = EventType.Health, Source = character.Source, SourceType = character.SourceType, Target = character.Action.Target, TargetType = character.Action.TargetType, Value = -damage });
+										break;
+
+									case TargetType.Enemies:
+										events.AddRange(Enemies.Select((x, i) => new Event { Type = EventType.Health, Source = character.Source, SourceType = character.SourceType, Target = i, TargetType = character.Action.TargetType, Value = -damage }));
+										break;
+
+									case TargetType.Allies:
+										events.AddRange(Party.Characters.Select((x, i) => new Event { Type = EventType.Health, Source = character.Source, SourceType = character.SourceType, Target = i, TargetType = character.Action.TargetType, Value = -damage }));
+										break;
+								}
+								break;
+
+							default:
+								System.Diagnostics.Debugger.Break();
+								break;
+						}
 						break;
 
 					case ActivityType.Run:
@@ -330,7 +354,7 @@ namespace RpgGame
 			public int Evade;
 			public int Absorb;
 			public int Hits;
-			public int Hit;
+			public int Accuracy;
 			public int Damage;
 			public int Critical;
 			public int Reserved;

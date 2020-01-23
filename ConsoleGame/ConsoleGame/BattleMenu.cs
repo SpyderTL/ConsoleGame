@@ -25,8 +25,8 @@ namespace ConsoleGame
 						Items = new MenuItem[]
 						{
 						new MenuItem { Text = "Attack", ActivityType = Battle.ActivityType.Attack, Activity = -1, Option = -1 },
-						new MenuItem { Text = "Special", ActivityType = Battle.ActivityType.Special, Activity = -1, Option = -1 },
-						new MenuItem { Text = "Magic", ActivityType = Battle.ActivityType.Magic, Activity = -1, Option = -1 },
+						new MenuItem { Text = "Ability", ActivityType = Battle.ActivityType.Ability, Activity = -1, Option = -1 },
+						new MenuItem { Text = "Spell", ActivityType = Battle.ActivityType.Spell, Activity = -1, Option = -1 },
 						new MenuItem { Text = "Item", ActivityType = Battle.ActivityType.Item, Activity = -1, Option = -1 },
 						new MenuItem { Text = "Run", ActivityType = Battle.ActivityType.Run, Activity = -1, Option = Enumerable.Range(0, Battle.Options[Character].Length).First(x => Battle.Options[Character][x].Type == Battle.ActivityType.Run) },
 						};
@@ -44,16 +44,16 @@ namespace ConsoleGame
 							}).ToArray();
 						break;
 
-					case (int)Battle.ActivityType.Magic:
+					case (int)Battle.ActivityType.Spell:
 						if (Activity == -1)
 						{
 							Items = Enumerable.Range(0, Battle.Options[Character].Length)
-								.Where(x => Battle.Options[Character][x].Type == Battle.ActivityType.Magic)
+								.Where(x => Battle.Options[Character][x].Type == Battle.ActivityType.Spell)
 								.GroupBy(x => Battle.Options[Character][x].Value)
 								.Select(x => new MenuItem
 								{
 									Text = x.Key.ToString(),
-									ActivityType = Battle.ActivityType.Magic,
+									ActivityType = Battle.ActivityType.Spell,
 									Activity = x.Key,
 									Option = -1
 								}).ToArray();
@@ -61,12 +61,12 @@ namespace ConsoleGame
 						else
 						{
 							Items = Enumerable.Range(0, Battle.Options[Character].Length)
-								.Where(x => Battle.Options[Character][x].Type == Battle.ActivityType.Magic &&
+								.Where(x => Battle.Options[Character][x].Type == Battle.ActivityType.Spell &&
 									Battle.Options[Character][x].Value == Activity)
 								.Select(x => new MenuItem
 								{
 									Text = Battle.Options[Character][x].TargetType == Battle.TargetType.Enemy ? Battle.Enemies[Battle.Options[Character][x].Target].Name : Battle.Allies[Battle.Options[Character][x].Target].Name,
-									ActivityType = Battle.ActivityType.Magic,
+									ActivityType = Battle.ActivityType.Spell,
 									Activity = Battle.Options[Character][x].Value,
 									Option = x
 								}).ToArray();

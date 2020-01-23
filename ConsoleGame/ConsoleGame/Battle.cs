@@ -13,6 +13,10 @@ namespace ConsoleGame
 		internal static Character[] Enemies;
 		internal static Event[] Events;
 
+		internal static string[] AbilityNames;
+		internal static string[] SpellNames;
+		internal static string[] ItemNames;
+
 		internal class Character
 		{
 			internal string Name;
@@ -40,8 +44,8 @@ namespace ConsoleGame
 		public enum ActivityType
 		{
 			Attack,
-			Special,
-			Magic,
+			Ability,
+			Spell,
 			Item,
 			Run
 		}
@@ -94,6 +98,16 @@ namespace ConsoleGame
 			TurnStarting,
 			TurnComplete,
 			BattleComplete
+		}
+
+		internal static void Start()
+		{
+			throw new NotImplementedException();
+		}
+
+		internal static void End()
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

@@ -7,6 +7,10 @@ namespace ConsoleGame
 	{
 		internal static void Load()
 		{
+			Battle.AbilityNames = RpgGame.Battle.AbilityTypes.Select(x => "Ability").ToArray();
+			Battle.SpellNames = RpgGame.Battle.SpellTypes.Select(x => "Spell").ToArray();
+			Battle.ItemNames = RpgGame.Battle.PotionTypes.Select(x => "Item").ToArray();
+
 			Battle.Allies = new Battle.Character[Party.Characters.Length];
 
 			for (var ally = 0; ally < Battle.Allies.Length; ally++)
@@ -64,20 +68,17 @@ namespace ConsoleGame
 
 		private static void Battle_BattleStarting()
 		{
-			Battle.Mode = Battle.BattleMode.BattleStarting;
+			BattleScreen.DrawBanner();
+			BattleScreen.DrawSlow();
 		}
 
 		private static void Battle_BattleComplete()
 		{
-			Battle.Mode = Battle.BattleMode.BattleComplete;
+			BattleScreen.Hide();
 		}
 
 		private static void Battle_TurnStarting()
 		{
-			var mode = Battle.Mode;
-
-			Battle.Mode = Battle.BattleMode.TurnStarting;
-
 			UpdateOptions();
 
 			BattleMenu.Character = 0;
@@ -87,11 +88,8 @@ namespace ConsoleGame
 
 			BattleMenu.Update();
 
-			if (mode != Battle.BattleMode.BattleStarting)
-			{
-				BattleScreen.Draw();
-				Screen.Update();
-			}
+			BattleScreen.Draw();
+			Screen.Update();
 		}
 
 		private static void Battle_TurnComplete()

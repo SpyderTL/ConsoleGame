@@ -24,7 +24,7 @@ namespace ConsoleGame
 			Screen.Update();
 			Thread.Sleep(500);
 
-			Screen.DrawRectangle('>', 0, 0, 7, 8);
+			Screen.DrawRectangle('>', 0, 0, 18, 14);
 			Screen.Update();
 			Thread.Sleep(500);
 
@@ -34,7 +34,18 @@ namespace ConsoleGame
 
 			for (var ally = 0; ally < Battle.Allies.Length; ally++)
 			{
-				Screen.DrawString(Battle.Allies[ally].Name, 2, ally + 2);
+				Screen.DrawString(Battle.Allies[ally].Name, 2, (ally * 4) + 2);
+
+				Screen.DrawString(Battle.Allies[ally].Health.ToString(), 4, (ally * 4) + 3);
+				Screen.DrawString("/", 7, (ally * 4) + 3);
+				Screen.DrawString(Battle.Allies[ally].MaxHealth.ToString(), 8, (ally * 4) + 3);
+				Screen.DrawString("HP", 11, (ally * 4) + 3);
+
+				Screen.DrawString(Battle.Allies[ally].Power.ToString(), 4, (ally * 4) + 4);
+				Screen.DrawString("/", 7, (ally * 4) + 4);
+				Screen.DrawString(Battle.Allies[ally].MaxPower.ToString(), 8, (ally * 4) + 4);
+				Screen.DrawString("MP", 11, (ally * 4) + 4);
+
 				Screen.Update();
 				Thread.Sleep(100);
 			}
@@ -55,12 +66,22 @@ namespace ConsoleGame
 		{
 			Screen.Clear();
 
-			Screen.DrawRectangle('>', 0, 0, 7, 8);
+			Screen.DrawRectangle('>', 0, 0, 18, 14);
 			Screen.DrawRectangle('<', 0, 24, 12, 39);
 
 			for (var ally = 0; ally < Battle.Allies.Length; ally++)
 			{
-				Screen.DrawString(Battle.Allies[ally].Name, 2, ally + 2);
+				Screen.DrawString(Battle.Allies[ally].Name, 2, (ally * 4) + 2);
+
+				Screen.DrawString(Battle.Allies[ally].Health.ToString(), 4, (ally * 4) + 3);
+				Screen.DrawString("/", 7, (ally * 4) + 3);
+				Screen.DrawString(Battle.Allies[ally].MaxHealth.ToString(), 8, (ally * 4) + 3);
+				Screen.DrawString("HP", 11, (ally * 4) + 3);
+
+				Screen.DrawString(Battle.Allies[ally].Power.ToString(), 4, (ally * 4) + 4);
+				Screen.DrawString("/", 7, (ally * 4) + 4);
+				Screen.DrawString(Battle.Allies[ally].MaxPower.ToString(), 8, (ally * 4) + 4);
+				Screen.DrawString("MP", 11, (ally * 4) + 4);
 			}
 
 			for (var enemy = 0; enemy < Battle.Enemies.Length; enemy++)
@@ -70,11 +91,11 @@ namespace ConsoleGame
 
 			if (BattleMenu.Character != -1)
 			{
-				Screen.FillRectangle(' ', BattleMenu.Character + 3, 10, BattleMenu.Character + BattleMenu.Items.Length + 4, 22);
-				Screen.DrawRectangle('>', BattleMenu.Character + 2, 9, BattleMenu.Character + BattleMenu.Items.Length + 5, 23);
+				Screen.FillRectangle(' ', (BattleMenu.Character * 4) + 1, 14, (BattleMenu.Character * 4) + BattleMenu.Items.Length + 2, 26);
+				Screen.DrawRectangle('>', (BattleMenu.Character * 4) + 0, 13, (BattleMenu.Character * 4) + BattleMenu.Items.Length + 3, 27);
 
 				for (var item = 0; item < BattleMenu.Items.Length; item++)
-					Screen.DrawString((item + 1).ToString() + ") " + BattleMenu.Items[item].Text, 11, BattleMenu.Character + 4 + item);
+					Screen.DrawString((item + 1).ToString() + ") " + BattleMenu.Items[item].Text, 15, (BattleMenu.Character * 4) + 2 + item);
 			}
 		}
 

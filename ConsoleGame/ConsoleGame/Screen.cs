@@ -103,10 +103,5 @@ namespace ConsoleGame
 			foreach (var character in text)
 				Characters[position++] = character;
 		}
-
-		internal static void DrawString(object p, int v1, int v2)
-		{
-			throw new NotImplementedException();
-		}
 	}
 }

@@ -15,7 +15,7 @@ namespace ConsoleGame
 
 			for (var ally = 0; ally < Battle.Allies.Length; ally++)
 			{
-				Battle.Allies[ally] = new Battle.Character { Name = Party.Characters[ally].Name };
+				Battle.Allies[ally] = new Battle.Character { Name = RpgGame.Party.Characters[ally].Name };
 			}
 
 			Battle.Enemies = new Battle.Character[RpgGame.Battle.Enemies.Length];
@@ -26,6 +26,25 @@ namespace ConsoleGame
 			}
 
 			Battle.Actions = Enumerable.Repeat(-1, Battle.Allies.Length).ToArray();
+		}
+
+		internal static void UpdateCharacters()
+		{
+			for (var ally = 0; ally < Battle.Allies.Length; ally++)
+			{
+				Battle.Allies[ally].Health = RpgGame.Party.Characters[ally].Health;
+				Battle.Allies[ally].MaxHealth = RpgGame.Party.Characters[ally].MaxHealth;
+				Battle.Allies[ally].Power = RpgGame.Party.Characters[ally].Power;
+				Battle.Allies[ally].MaxPower = RpgGame.Party.Characters[ally].MaxPower;
+			}
+
+			for (var enemy = 0; enemy < Battle.Enemies.Length; enemy++)
+			{
+				Battle.Enemies[enemy].Health = RpgGame.Battle.Enemies[enemy].Health;
+				Battle.Enemies[enemy].MaxHealth = RpgGame.Battle.Enemies[enemy].MaxHealth;
+				Battle.Enemies[enemy].Power = RpgGame.Battle.Enemies[enemy].Power;
+				Battle.Enemies[enemy].MaxPower = RpgGame.Battle.Enemies[enemy].MaxPower;
+			}
 		}
 
 		internal static void UpdateOptions()

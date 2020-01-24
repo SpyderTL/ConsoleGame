@@ -209,16 +209,16 @@ namespace RpgGame
 					var count3 = random.Next(minimum3, maximum3 + 1);
 					var count4 = random.Next(minimum4, maximum4 + 1);
 
-					for (var x = 0; x < count1; x++)
+					for (var x = 0; x < count1 && enemies.Count < 9; x++)
 						enemies.Add(new Battle.Enemy { Type = enemy1, Health = Battle.EnemyTypes[enemy1].Health, MaxHealth = Battle.EnemyTypes[enemy1].Health });
 
-					for (var x = 0; x < count2; x++)
+					for (var x = 0; x < count2 && enemies.Count < 9; x++)
 						enemies.Add(new Battle.Enemy { Type = enemy2, Health = Battle.EnemyTypes[enemy2].Health, MaxHealth = Battle.EnemyTypes[enemy2].Health });
 
-					for (var x = 0; x < count3; x++)
+					for (var x = 0; x < count3 && enemies.Count < 9; x++)
 						enemies.Add(new Battle.Enemy { Type = enemy3, Health = Battle.EnemyTypes[enemy3].Health, MaxHealth = Battle.EnemyTypes[enemy3].Health });
 
-					for (var x = 0; x < count4; x++)
+					for (var x = 0; x < count4 && enemies.Count < 9; x++)
 						enemies.Add(new Battle.Enemy { Type = enemy4, Health = Battle.EnemyTypes[enemy4].Health, MaxHealth = Battle.EnemyTypes[enemy4].Health });
 				}
 				else
@@ -226,10 +226,10 @@ namespace RpgGame
 					var alternateCount1 = random.Next(alternateMinimum1, alternateMaximum1 + 1);
 					var alternateCount2 = random.Next(alternateMinimum2, alternateMaximum2 + 1);
 
-					for (var x = 0; x < alternateCount1; x++)
+					for (var x = 0; x < alternateCount1 && enemies.Count < 9; x++)
 						enemies.Add(new Battle.Enemy { Type = enemy1, Health = Battle.EnemyTypes[enemy1].Health, MaxHealth = Battle.EnemyTypes[enemy1].Health });
 
-					for (var x = 0; x < alternateCount2; x++)
+					for (var x = 0; x < alternateCount2 && enemies.Count < 9; x++)
 						enemies.Add(new Battle.Enemy { Type = enemy2, Health = Battle.EnemyTypes[enemy2].Health, MaxHealth = Battle.EnemyTypes[enemy2].Health });
 				}
 

@@ -94,6 +94,8 @@ namespace ConsoleGame
 		private static void Battle_BattleComplete()
 		{
 			BattleScreen.Hide();
+
+			Game.Mode = Game.GameMode.Intro;
 		}
 
 		private static void Battle_TurnStarting()

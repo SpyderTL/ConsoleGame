@@ -177,39 +177,21 @@ namespace RpgGame
 						break;
 
 					case ActivityType.Ability:
+						events.Add(new Event { Type = (EventType)character.Action.Type, Source = character.Source, SourceType = character.SourceType, Target = character.Action.Target, TargetType = character.Action.TargetType, Value = character.Action.Value });
+
+						events.AddRange(Magic(AbilityTypes[character.Action.Value], character.Action, character.Source, character.SourceType, character.Action.Target, character.Action.TargetType, character.Accuracy, character.Hits, character.Damage, character.Evade, random));
+						break;
+
 					case ActivityType.Spell:
+						events.Add(new Event { Type = (EventType)character.Action.Type, Source = character.Source, SourceType = character.SourceType, Target = character.Action.Target, TargetType = character.Action.TargetType, Value = character.Action.Value });
+
+						events.AddRange(Magic(SpellTypes[character.Action.Value], character.Action, character.Source, character.SourceType, character.Action.Target, character.Action.TargetType, character.Accuracy, character.Hits, character.Damage, character.Evade, random));
+						break;
+
 					case ActivityType.Item:
 						events.Add(new Event { Type = (EventType)character.Action.Type, Source = character.Source, SourceType = character.SourceType, Target = character.Action.Target, TargetType = character.Action.TargetType, Value = character.Action.Value });
 
-						switch (AbilityTypes[character.Action.Value].Effect)
-						{
-							case MagicEffect.Damage:
-								var ability = AbilityTypes[character.Action.Value];
-
-								damage = ability.Value;
-								damage += random.Next(ability.Value) + 1;
-
-								switch (character.Action.TargetType)
-								{
-									case TargetType.Ally:
-									case TargetType.Enemy:
-										events.Add(new Event { Type = EventType.Health, Source = character.Source, SourceType = character.SourceType, Target = character.Action.Target, TargetType = character.Action.TargetType, Value = -damage });
-										break;
-
-									case TargetType.Enemies:
-										events.AddRange(Enemies.Select((x, i) => new Event { Type = EventType.Health, Source = character.Source, SourceType = character.SourceType, Target = i, TargetType = character.Action.TargetType, Value = -damage }));
-										break;
-
-									case TargetType.Allies:
-										events.AddRange(Party.Characters.Select((x, i) => new Event { Type = EventType.Health, Source = character.Source, SourceType = character.SourceType, Target = i, TargetType = character.Action.TargetType, Value = -damage }));
-										break;
-								}
-								break;
-
-							default:
-								System.Diagnostics.Debugger.Break();
-								break;
-						}
+						events.AddRange(Magic(PotionTypes[character.Action.Value], character.Action, character.Source, character.SourceType, character.Action.Target, character.Action.TargetType, character.Accuracy, character.Hits, character.Damage, character.Evade, random));
 						break;
 
 					case ActivityType.Run:
@@ -222,6 +204,39 @@ namespace RpgGame
 			}
 
 			Events = events.ToArray();
+		}
+
+		private static IEnumerable<Event> Magic(MagicType type, Activity action, int source, SourceType sourceType, int target, TargetType targetType, int accuracy, int hits, int damage, int evade, Random random)
+		{
+			switch (type.Effect)
+			{
+				case MagicEffect.Damage:
+					damage = action.Value;
+					damage += random.Next(action.Value) + 1;
+
+					switch (targetType)
+					{
+						case TargetType.Ally:
+						case TargetType.Enemy:
+							yield return new Event { Type = EventType.Health, Source = source, SourceType = sourceType, Target = target, TargetType = targetType, Value = -damage };
+							break;
+
+						case TargetType.Enemies:
+							foreach (var e in Enemies.Select((x, i) => new Event { Type = EventType.Health, Source = source, SourceType = sourceType, Target = i, TargetType = action.TargetType, Value = -damage }))
+								yield return e;
+							break;
+
+						case TargetType.Allies:
+							foreach(var e in Party.Characters.Select((x, i) => new Event { Type = EventType.Health, Source = source, SourceType = sourceType, Target = i, TargetType = targetType, Value = -damage }))
+								yield return e;
+							break;
+					}
+					break;
+
+				default:
+					System.Diagnostics.Debugger.Break();
+					yield break;
+			}
 		}
 
 		private static void Timer_Callback(object state)
@@ -262,9 +277,12 @@ namespace RpgGame
 
 		public static void Disable()
 		{
-			Timer.Change(0, 0);
-			Timer.Dispose();
-			Timer = null;
+			if (Timer != null)
+			{
+				Timer.Change(0, 0);
+				Timer.Dispose();
+				Timer = null;
+			}
 		}
 
 		public struct Enemy

@@ -103,7 +103,7 @@ namespace ConsoleGame
 								var random = new Random();
 
 								//RpgGame.DataBattle.LoadFormation(random.Next(0, 128), random.Next(0, 2) == 1);
-								RpgGame.DataBattle.LoadFormation(random.Next(120, 124), false);
+								RpgGame.DataBattle.LoadFormation(random.Next(0x6e, 0x6f), false);
 
 								RpgBattle.Load();
 								RpgBattle.UpdateCharacters();
@@ -166,6 +166,7 @@ namespace ConsoleGame
 					case Game.GameMode.Battle:
 						RpgBattle.Load();
 						RpgBattle.UpdateCharacters();
+						RpgGame.BattleLogic.Enable();
 
 						InputBattle.Enable();
 						RpgBattle.Enable();

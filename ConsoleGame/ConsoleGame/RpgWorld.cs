@@ -42,6 +42,8 @@ namespace ConsoleGame
 			Party.X = RpgGame.PartyWorld.X;
 			Party.Y = RpgGame.PartyWorld.Y;
 
+			RpgParty.Refresh();
+
 			MapScreen.Draw();
 		}
 

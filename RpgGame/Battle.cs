@@ -30,6 +30,8 @@ namespace RpgGame
 
 		public static void Enable()
 		{
+			Result = BattleResults.None;
+
 			AllyActions = Enumerable.Repeat(-1, Party.Characters.Length).ToArray();
 			EnemyActions = Enumerable.Repeat(-1, Enemies.Length).ToArray();
 
@@ -147,9 +149,25 @@ namespace RpgGame
 
 			foreach (var character in characters)
 			{
+				if (character.SourceType == SourceType.Ally)
+				{
+					if (Party.Characters[character.Source].Health == 0)
+						continue;
+				}
+				else if (Enemies[character.Source].Health == 0)
+					continue;
+
 				switch (character.Action.Type)
 				{
 					case ActivityType.Attack:
+						if (character.Action.TargetType == TargetType.Ally)
+						{
+							if (Party.Characters[character.Action.Target].Health == 0)
+								continue;
+						}
+						else if (Enemies[character.Action.Target].Health == 0)
+							continue;
+
 						var hits = 0;
 						var damage = 0;
 
@@ -171,6 +189,11 @@ namespace RpgGame
 							events.Add(new Event { Type = EventType.Hit, Source = character.Source, SourceType = character.SourceType, Target = character.Action.Target, TargetType = character.Action.TargetType, Value = hits });
 
 							events.Add(new Event { Type = EventType.Health, Source = character.Source, SourceType = character.SourceType, Target = character.Action.Target, TargetType = character.Action.TargetType, Value = -damage });
+
+							if (character.Action.TargetType == TargetType.Ally)
+								Party.Characters[character.Action.Target].Health -= Math.Min(damage, Party.Characters[character.Action.Target].Health);
+							else
+								Enemies[character.Action.Target].Health -= Math.Min(damage, Enemies[character.Action.Target].Health);
 						}
 						else
 							events.Add(new Event { Type = EventType.Miss, Source = character.Source, SourceType = character.SourceType, Target = character.Action.Target, TargetType = character.Action.TargetType });
@@ -195,12 +218,21 @@ namespace RpgGame
 						break;
 
 					case ActivityType.Run:
-						if(random.Next(2) == 0)
+						if (random.Next(2) == 0)
+						{
 							events.Add(new Event { Type = EventType.Escape, Source = character.Source, SourceType = character.SourceType, Target = character.Action.Target, TargetType = character.Action.TargetType });
+
+							Result = BattleResults.Escape;
+						}
 						else
 							events.Add(new Event { Type = EventType.Trapped, Source = character.Source, SourceType = character.SourceType, Target = character.Action.Target, TargetType = character.Action.TargetType });
 						break;
 				}
+
+				if (Result != BattleResults.None ||
+					Party.Characters.All(x => x.Health == 0) ||
+					Enemies.All(x => x.Health == 0))
+					break;
 			}
 
 			Events = events.ToArray();
@@ -217,18 +249,31 @@ namespace RpgGame
 					switch (targetType)
 					{
 						case TargetType.Ally:
-						case TargetType.Enemy:
+							Party.Characters[target].Health -= Math.Min(damage, Party.Characters[target].Health);
 							yield return new Event { Type = EventType.Health, Source = source, SourceType = sourceType, Target = target, TargetType = targetType, Value = -damage };
 							break;
 
-						case TargetType.Enemies:
-							foreach (var e in Enemies.Select((x, i) => new Event { Type = EventType.Health, Source = source, SourceType = sourceType, Target = i, TargetType = action.TargetType, Value = -damage }))
-								yield return e;
+						case TargetType.Enemy:
+							Enemies[target].Health -= Math.Min(damage, Enemies[target].Health);
+							yield return new Event { Type = EventType.Health, Source = source, SourceType = sourceType, Target = target, TargetType = targetType, Value = -damage };
 							break;
 
 						case TargetType.Allies:
-							foreach(var e in Party.Characters.Select((x, i) => new Event { Type = EventType.Health, Source = source, SourceType = sourceType, Target = i, TargetType = targetType, Value = -damage }))
-								yield return e;
+							for (var character = 0; character < Party.Characters.Length; character++)
+							{
+								Party.Characters[character].Health -= Math.Min(damage, Party.Characters[character].Health);
+
+								yield return new Event { Type = EventType.Health, Source = source, SourceType = sourceType, Target = character, TargetType = targetType, Value = -damage };
+							}
+							break;
+
+						case TargetType.Enemies:
+							for (var enemy = 0; enemy < Enemies.Length; enemy++)
+							{
+								Enemies[enemy].Health -= Math.Min(damage, Enemies[enemy].Health);
+
+								yield return new Event { Type = EventType.Health, Source = source, SourceType = sourceType, Target = enemy, TargetType = targetType, Value = -damage };
+							}
 							break;
 					}
 					break;

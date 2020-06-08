@@ -93,9 +93,16 @@ namespace ConsoleGame
 
 		private static void Battle_BattleComplete()
 		{
-			BattleScreen.Hide();
+			if (RpgGame.Battle.Result == RpgGame.Battle.BattleResults.Defeat)
+				Game.Mode = Game.GameMode.Intro;
+			else
+			{
+				Game.Mode = Game.GameMode.World;
 
-			Game.Mode = Game.GameMode.Intro;
+				RpgParty.Refresh();
+			}
+
+			BattleScreen.Hide();
 		}
 
 		private static void Battle_TurnStarting()

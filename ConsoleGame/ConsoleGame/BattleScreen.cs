@@ -86,7 +86,8 @@ namespace ConsoleGame
 
 			for (var enemy = 0; enemy < Battle.Enemies.Length; enemy++)
 			{
-				Screen.DrawString(Battle.Enemies[enemy].Name, 26, enemy + 2);
+				if(Battle.Enemies[enemy].Health != 0)
+					Screen.DrawString(Battle.Enemies[enemy].Name, 26, enemy + 2);
 			}
 
 			if (BattleMenu.Character != -1)
@@ -299,6 +300,25 @@ namespace ConsoleGame
 						Screen.Update();
 
 						Thread.Sleep(1500);
+
+						if (e.TargetType == Battle.TargetType.Ally)
+						{
+							Battle.Allies[e.Target].Health += e.Value;
+
+							if (Battle.Allies[e.Target].Health < 0)
+								Battle.Allies[e.Target].Health = 0;
+							else if (Battle.Allies[e.Target].Health > Battle.Allies[e.Target].MaxHealth)
+								Battle.Allies[e.Target].Health = Battle.Allies[e.Target].MaxHealth;
+						}
+						else
+						{
+							Battle.Enemies[e.Target].Health += e.Value;
+
+							if (Battle.Enemies[e.Target].Health < 0)
+								Battle.Enemies[e.Target].Health = 0;
+							else if (Battle.Enemies[e.Target].Health > Battle.Enemies[e.Target].MaxHealth)
+								Battle.Enemies[e.Target].Health = Battle.Enemies[e.Target].MaxHealth;
+						}
 
 						Draw();
 						Screen.Update();

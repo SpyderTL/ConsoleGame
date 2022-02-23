@@ -7,12 +7,21 @@ namespace RpgGame
 {
 	public static class DataWorld
 	{
+		private const int TileTable = 0x8000;
+		private const int TeleportXTable = 0xAC00;
+		private const int TeleportYTable = 0xAC20;
+		private const int TeleportMapTable = 0xAC40;
+		private const int WorldSegmentBank = 0x01;
+		private const int WorldSegmentTable = 0x8000;
+		private const int DomainFormationBank = 0x0B;
+		private const int DomainFormationTable = 0x8000;
+
 		public static void Load()
 		{
 			using (var reader = Data.Reader())
 			{
 				// Load Tiles
-				reader.BaseStream.Position = Data.Address(0, 0x8000);
+				reader.BaseStream.Position = Data.Position(0, TileTable);
 
 				for (var tile = 0; tile < 128; tile++)
 				{
@@ -32,23 +41,23 @@ namespace RpgGame
 				}
 
 				// Load Teleports
-				reader.BaseStream.Position = Data.Address(0, 0xAC40);
+				reader.BaseStream.Position = Data.Position(0, TeleportMapTable);
 
 				for (var teleport = 0; teleport < 32; teleport++)
 					World.Teleports[teleport].Map = reader.ReadByte();
 
-				reader.BaseStream.Position = Data.Address(0, 0xAC00);
+				reader.BaseStream.Position = Data.Position(0, TeleportXTable);
 
 				for (var teleport = 0; teleport < 32; teleport++)
 					World.Teleports[teleport].X = reader.ReadByte();
 
-				reader.BaseStream.Position = Data.Address(0, 0xAC20);
+				reader.BaseStream.Position = Data.Position(0, TeleportYTable);
 
 				for (var teleport = 0; teleport < 32; teleport++)
 					World.Teleports[teleport].Y = reader.ReadByte();
 
 				// Load Segments
-				reader.BaseStream.Position = Data.Address(1, 0x8000);
+				reader.BaseStream.Position = Data.Position(WorldSegmentBank, WorldSegmentTable);
 
 				World.Rows = new World.Row[256];
 
@@ -59,7 +68,7 @@ namespace RpgGame
 
 				for (var row = 0; row < 256; row++)
 				{
-					reader.BaseStream.Position = Data.Address(1, rows[row]);
+					reader.BaseStream.Position = Data.Position(1, rows[row]);
 
 					var segments = new List<World.Segment>();
 
@@ -89,13 +98,13 @@ namespace RpgGame
 				}
 
 				// Load Domain Formations
-				reader.BaseStream.Position = Data.Address(0x0B, 0x8000);
+				reader.BaseStream.Position = Data.Position(DomainFormationBank, DomainFormationTable);
 
-				for (var domain = 0; domain < World.Domains.Length; domain++)
+				for (var domain = 0; domain < World.DomainCount; domain++)
 				{
-					World.Domains[domain].Formations = new World.DomainFormation[8];
+					World.Domains[domain].Formations = new World.DomainFormation[World.DomainFormationCount];
 
-					for (var formation = 0; formation < 8; formation++)
+					for (var formation = 0; formation < World.DomainFormationCount; formation++)
 					{
 						var data = reader.ReadByte();
 

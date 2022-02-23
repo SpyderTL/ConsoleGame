@@ -6,10 +6,15 @@ namespace RpgGame
 {
 	public static class World
 	{
-		public static Tile[] Tiles = new Tile[128];
-		public static Teleport[] Teleports = new Teleport[32];
+		public const int TileCount = 128;
+		public const int TeleportCount = 32;
+		public const int DomainCount = 64;
+		public const int DomainFormationCount = 8;
+
+		public static Tile[] Tiles = new Tile[TileCount];
+		public static Teleport[] Teleports = new Teleport[TeleportCount];
 		public static Row[] Rows;
-		public static Domain[] Domains = new Domain[64];
+		public static Domain[] Domains = new Domain[DomainCount];
 			
 		public struct Row
 		{

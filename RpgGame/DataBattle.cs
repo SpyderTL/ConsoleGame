@@ -11,7 +11,7 @@ namespace RpgGame
 		{
 			using (var reader = Data.Reader())
 			{
-				reader.BaseStream.Position = Data.Address(0x0C, 0x8520);
+				reader.BaseStream.Position = Data.Position(0x0C, 0x8520);
 
 				for (var enemy = 0; enemy < 127; enemy++)
 				{
@@ -34,7 +34,7 @@ namespace RpgGame
 					Battle.EnemyTypes[enemy].Resist = (Battle.Elements)reader.ReadByte();
 				}
 
-				reader.BaseStream.Position = Data.Address(0x0C, 0x9020);
+				reader.BaseStream.Position = Data.Position(0x0C, 0x9020);
 
 				for (var logic = 0; logic < 128; logic++)
 				{
@@ -52,7 +52,7 @@ namespace RpgGame
 						Battle.LogicTypes[logic].Abilities[ability] = reader.ReadByte();
 				}
 
-				reader.BaseStream.Position = Data.Address(0x0B, 0x94E0);
+				reader.BaseStream.Position = Data.Position(0x0B, 0x94E0);
 
 				var addresses = new int[128];
 
@@ -63,12 +63,12 @@ namespace RpgGame
 
 				for (var enemy = 0; enemy < 128; enemy++)
 				{
-					reader.BaseStream.Position = Data.Address(0x0B, addresses[enemy]);
+					reader.BaseStream.Position = Data.Position(0x0B, addresses[enemy]);
 
 					Battle.EnemyTypes[enemy].Name = reader.ReadName();
 				}
 
-				reader.BaseStream.Position = Data.Address(0x0C, 0x81E0);
+				reader.BaseStream.Position = Data.Position(0x0C, 0x81E0);
 
 				for (var spell = 0; spell < 64; spell++)
 				{
@@ -175,7 +175,7 @@ namespace RpgGame
 		{
 			using (var reader = Data.Reader())
 			{
-				reader.BaseStream.Position = Data.Address(0x0B, 0x8400 + (formation * 16));
+				reader.BaseStream.Position = Data.Position(0x0B, 0x8400 + (formation * 16));
 
 				var data = reader.ReadBytes(16);
 

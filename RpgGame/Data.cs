@@ -7,7 +7,7 @@ namespace RpgGame
 	{
 		internal static byte[] Rom = Properties.Resources.ROM;
 
-		internal static int Address(int bank, int address)
+		internal static int Position(int bank, int address)
 		{
 			return (bank * 0x4000) + address - 0x8000;
 		}

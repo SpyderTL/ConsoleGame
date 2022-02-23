@@ -8,17 +8,35 @@ namespace RpgGame
 {
 	public static class DataMap
 	{
+		private const int MapTilesetTable = 0xACC0;
+		private const int TilesetTable = 0x8800;
+		private const int TeleportXTable = 0xAD00;
+		private const int TeleportYTable = 0xAD40;
+		private const int TeleportMapTable = 0xAD80;
+		private const int ExitXTable = 0xAC60;
+		private const int ExitYTable = 0xAC70;
+		private const int TreasureTable = 0xB100;
+		private const int ItemBank = 0x0A;
+		private const int ItemTable = 0xB700;
+		private const int SegmentBank = 0x04;
+		private const int MapSegmentTable = 0x8000;
+		private const int MapObjectTable = 0xB400;
+		private const int DialogBank = 0x0A;
+		private const int DialogTable = 0x8000;
+		private const int ObjectDialogBank = 0x0E;
+		private const int ObjectDialogTable = 0x95D5;
+
 		public static void Load(int map)
 		{
 			using (var reader = Data.Reader())
 			{
 				// Find Tileset
-				reader.BaseStream.Position = Data.Address(0, 0xACC0 + map);
+				reader.BaseStream.Position = Data.Position(0, MapTilesetTable + map);
 
 				var tileset = reader.ReadByte();
 
 				// Load Tiles
-				reader.BaseStream.Position = Data.Address(0, 0x8800 + (tileset * 256));
+				reader.BaseStream.Position = Data.Position(0, TilesetTable + (tileset * 256));
 
 				for (var tile = 0; tile < 128; tile++)
 				{
@@ -36,40 +54,40 @@ namespace RpgGame
 				}
 
 				// Load Teleports
-				reader.BaseStream.Position = Data.Address(0, 0xAD80);
+				reader.BaseStream.Position = Data.Position(0, TeleportMapTable);
 
 				for (var teleport = 0; teleport < Map.Teleports.Length; teleport++)
 					Map.Teleports[teleport].Map = reader.ReadByte();
 
-				reader.BaseStream.Position = Data.Address(0, 0xAD00);
+				reader.BaseStream.Position = Data.Position(0, TeleportXTable);
 
 				for (var teleport = 0; teleport < Map.Teleports.Length; teleport++)
 					Map.Teleports[teleport].X = reader.ReadByte();
 
-				reader.BaseStream.Position = Data.Address(0, 0xAD40);
+				reader.BaseStream.Position = Data.Position(0, TeleportYTable);
 
 				for (var teleport = 0; teleport < Map.Teleports.Length; teleport++)
 					Map.Teleports[teleport].Y = reader.ReadByte();
 
 				// Load Exits
-				reader.BaseStream.Position = Data.Address(0, 0xAC60);
+				reader.BaseStream.Position = Data.Position(0, ExitXTable);
 
 				for (var exit = 0; exit < Map.Exits.Length; exit++)
 					Map.Exits[exit].X = reader.ReadByte();
 
-				reader.BaseStream.Position = Data.Address(0, 0xAC70);
+				reader.BaseStream.Position = Data.Position(0, ExitYTable);
 
 				for (var exit = 0; exit < Map.Exits.Length; exit++)
 					Map.Exits[exit].Y = reader.ReadByte();
 
 				// Load Treasures
-				reader.BaseStream.Position = Data.Address(0, 0xB100);
+				reader.BaseStream.Position = Data.Position(0, TreasureTable);
 
 				for (var treasure = 0; treasure < Map.Treasures.Length; treasure++)
 					Map.Treasures[treasure].Item = reader.ReadByte();
 
 				// Load Items
-				reader.BaseStream.Position = Data.Address(0x0a, 0xB700);
+				reader.BaseStream.Position = Data.Position(ItemBank, ItemTable);
 
 				var addresses = new int[256];
 
@@ -78,7 +96,7 @@ namespace RpgGame
 
 				for (var item = 0; item < Map.Items.Length; item++)
 				{
-					reader.BaseStream.Position = Data.Address(0x0a, addresses[item]);
+					reader.BaseStream.Position = Data.Position(ItemBank, addresses[item]);
 
 					Map.Items[item].Name = reader.ReadText();
 
@@ -101,14 +119,14 @@ namespace RpgGame
 				}
 
 				// Load Segments
-				reader.BaseStream.Position = Data.Address(4, 0x8000 + (map * 2));
+				reader.BaseStream.Position = Data.Position(SegmentBank, MapSegmentTable + (map * 2));
 
 				var address = reader.ReadUInt16();
 
-				var bank = 4 + (address >> 14);
-				var offset = 0x8000 + (address & 0x3fff);
+				var bank = SegmentBank + (address >> 14);
+				var offset = MapSegmentTable + (address & 0x3fff);
 
-				reader.BaseStream.Position = Data.Address(bank, offset);
+				reader.BaseStream.Position = Data.Position(bank, offset);
 
 				var segments = new List<Map.Segment>();
 
@@ -137,7 +155,7 @@ namespace RpgGame
 				Map.Segments = segments.ToArray();
 
 				// Load Objects
-				reader.BaseStream.Position = Data.Address(0, 0xB400 + (map * 0x30));
+				reader.BaseStream.Position = Data.Position(0, MapObjectTable + (map * 0x30));
 
 				for (var obj = 0; obj < Map.Objects.Length; obj++)
 				{
@@ -160,7 +178,7 @@ namespace RpgGame
 				}
 
 				// Load Dialogs
-				reader.BaseStream.Position = Data.Address(0x0a, 0x8000);
+				reader.BaseStream.Position = Data.Position(DialogBank, DialogTable);
 
 				for (var dialog = 0; dialog < 256; dialog++)
 				{
@@ -169,13 +187,13 @@ namespace RpgGame
 
 				for (var dialog = 0; dialog < 256; dialog++)
 				{
-					reader.BaseStream.Position = Data.Address(0x0a, addresses[dialog]);
+					reader.BaseStream.Position = Data.Position(0x0a, addresses[dialog]);
 
 					Map.Dialogs[dialog] = reader.ReadText();
 				}
 
 				// Load Object Dialogs
-				reader.BaseStream.Position = Data.Address(0x0e, 0x95D5);
+				reader.BaseStream.Position = Data.Position(ObjectDialogBank, ObjectDialogTable);
 
 				for (var obj = 0; obj < 208; obj++)
 				{

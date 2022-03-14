@@ -112,7 +112,7 @@ namespace RpgGame
 
 					var formation = World.Domains[domain].Formations[random.Next(8)];
 
-					DataBattle.LoadFormation(formation.Formation, formation.Alternate);
+					BattleData.LoadFormation(formation.Formation, formation.Alternate);
 
 					PartyAttacked?.Invoke();
 				}
@@ -125,7 +125,7 @@ namespace RpgGame
 			{
 				var teleport = World.Tiles[World.Rows[Y].Segments[segment].Tile].Value;
 
-				DataMap.Load(World.Teleports[teleport].Map);
+				MapData.Load(World.Teleports[teleport].Map);
 				PartyMap.Current = World.Teleports[teleport].Map;
 				PartyMap.X = World.Teleports[teleport].X;
 				PartyMap.Y = World.Teleports[teleport].Y;

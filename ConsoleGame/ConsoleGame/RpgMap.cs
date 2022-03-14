@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Rpg;
 
 namespace ConsoleGame
 {
@@ -14,7 +15,7 @@ namespace ConsoleGame
 			RpgGame.PartyMap.MapChanged += PartyMap_MapChanged;
 			RpgGame.PartyMap.MapExited += PartyMap_MapExited;
 			RpgGame.PartyMap.TreasureFound += PartyMap_TreasureFound;
-			RpgGame.PartyMap.ObjectResponded += PartyMap_ObjectResponded; ;
+			RpgGame.PartyMap.ObjectResponded += PartyMap_ObjectResponded;
 
 			Party.X = RpgGame.PartyMap.X;
 			Party.Y = RpgGame.PartyMap.Y;

@@ -6,7 +6,7 @@ using System.Text;
 
 namespace RpgGame
 {
-	public static class DataMap
+	public static class MapData
 	{
 		private const int MapTilesetTable = 0xACC0;
 		private const int TilesetTable = 0x8800;

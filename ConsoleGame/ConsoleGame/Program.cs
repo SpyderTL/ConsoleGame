@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 
 namespace ConsoleGame
@@ -8,7 +9,8 @@ namespace ConsoleGame
 	{
 		static void Main(string[] args)
 		{
-			RpgGame.DataBattle.Load();
+			RpgGame.BattleData.Load();
+			RpgGame.ClassData.Load();
 
 			Screen.Enable();
 
@@ -67,15 +69,38 @@ namespace ConsoleGame
 						{
 							case 0:
 								// World
-								RpgGame.Party.Characters[0] = new RpgGame.Party.Character { Name = "Alpha", Type = RpgGame.Party.CharacterType.Fighter, Health = 100, MaxHealth = 100, Power = 100, MaxPower = 100 };
-								RpgGame.Party.Characters[1] = new RpgGame.Party.Character { Name = "Beta", Type = RpgGame.Party.CharacterType.Fighter, Health = 100, MaxHealth = 100, Power = 100, MaxPower = 100 };
-								RpgGame.Party.Characters[2] = new RpgGame.Party.Character { Name = "Gamma", Type = RpgGame.Party.CharacterType.Fighter, Health = 100, MaxHealth = 100, Power = 100, MaxPower = 100 };
-								RpgGame.Party.Characters[3] = new RpgGame.Party.Character { Name = "Delta", Type = RpgGame.Party.CharacterType.Fighter, Health = 100, MaxHealth = 100, Power = 100, MaxPower = 100 };
+								RpgGame.Party.Characters = new[] { "Alpha", "Beta", "Gamma", "Delta" }
+									.Select(x => new RpgGame.Party.Character
+									{
+										Name = x,
+										Type = RpgGame.Party.CharacterType.Fighter,
+										Health = RpgGame.ClassData.Classes[(int)RpgGame.Party.CharacterType.Fighter].Health,
+										MaxHealth = RpgGame.ClassData.Classes[(int)RpgGame.Party.CharacterType.Fighter].Health,
+										Strength = RpgGame.ClassData.Classes[(int)RpgGame.Party.CharacterType.Fighter].Strength,
+										Agility = RpgGame.ClassData.Classes[(int)RpgGame.Party.CharacterType.Fighter].Agility,
+										Intelligence = RpgGame.ClassData.Classes[(int)RpgGame.Party.CharacterType.Fighter].Intelligence,
+										Vitality = RpgGame.ClassData.Classes[(int)RpgGame.Party.CharacterType.Fighter].Vitality,
+										Luck = RpgGame.ClassData.Classes[(int)RpgGame.Party.CharacterType.Fighter].Luck,
+										Damage = RpgGame.ClassData.Classes[(int)RpgGame.Party.CharacterType.Fighter].Damage,
+										Accuracy = RpgGame.ClassData.Classes[(int)RpgGame.Party.CharacterType.Fighter].Accuracy,
+										Evade = RpgGame.ClassData.Classes[(int)RpgGame.Party.CharacterType.Fighter].Evade,
+										//MagicDefense = RpgGame.ClassData.Classes[(int)RpgGame.Party.CharacterType.Fighter].MagicDefense
+
+										Hits = (RpgGame.ClassData.Classes[(int)RpgGame.Party.CharacterType.Fighter].Accuracy >> 5) + 1,
+										Level = 1,
+										Experience = 0,
+										Absorb = 0
+									}).ToArray();
+
+								//RpgGame.Party.Characters[0] = new RpgGame.Party.Character { Name = "Alpha", Type = RpgGame.Party.CharacterType.Fighter, Health = 100, MaxHealth = 100, Power = 100, MaxPower = 100, Hits = 1 };
+								//RpgGame.Party.Characters[1] = new RpgGame.Party.Character { Name = "Beta", Type = RpgGame.Party.CharacterType.Fighter, Health = 100, MaxHealth = 100, Power = 100, MaxPower = 100, Hits = 1 };
+								//RpgGame.Party.Characters[2] = new RpgGame.Party.Character { Name = "Gamma", Type = RpgGame.Party.CharacterType.Fighter, Health = 100, MaxHealth = 100, Power = 100, MaxPower = 100, Hits = 1 };
+								//RpgGame.Party.Characters[3] = new RpgGame.Party.Character { Name = "Delta", Type = RpgGame.Party.CharacterType.Fighter, Health = 100, MaxHealth = 100, Power = 100, MaxPower = 100, Hits = 1 };
 
 								RpgGame.PartyWorld.X = 153;
 								RpgGame.PartyWorld.Y = 165;
 
-								RpgGame.DataWorld.Load();
+								RpgGame.WorldData.Load();
 
 								RpgGame.PartyWorld.Refresh();
 
@@ -94,7 +119,7 @@ namespace ConsoleGame
 								RpgGame.PartyWorld.X = 153;
 								RpgGame.PartyWorld.Y = 165;
 
-								RpgGame.DataWorld.Load();
+								RpgGame.WorldData.Load();
 
 								RpgGame.PartyWorld.Refresh();
 
@@ -103,10 +128,10 @@ namespace ConsoleGame
 								var random = new Random();
 
 								//RpgGame.DataBattle.LoadFormation(random.Next(0, 128), random.Next(0, 2) == 1);
-								RpgGame.DataBattle.LoadFormation(random.Next(0x6e, 0x6f), false);
+								RpgGame.BattleData.LoadFormation(random.Next(0x6e, 0x6f), false);
 
-								RpgBattle.Load();
-								RpgBattle.UpdateCharacters();
+								RpgBattle.ReadData();
+								RpgBattle.ReadCharacters();
 								RpgGame.BattleLogic.Enable();
 
 								Game.Mode = Game.GameMode.Battle;
@@ -164,8 +189,8 @@ namespace ConsoleGame
 						break;
 
 					case Game.GameMode.Battle:
-						RpgBattle.Load();
-						RpgBattle.UpdateCharacters();
+						RpgBattle.ReadData();
+						RpgBattle.ReadCharacters();
 						RpgGame.BattleLogic.Enable();
 
 						InputBattle.Enable();

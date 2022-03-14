@@ -5,7 +5,7 @@ using System.Text;
 
 namespace RpgGame
 {
-	public static class DataWorld
+	public static class WorldData
 	{
 		private const int TileTable = 0x8000;
 		private const int TeleportXTable = 0xAC00;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Rpg;
 
 namespace ConsoleGame
 {
@@ -24,11 +25,11 @@ namespace ConsoleGame
 					case -1:
 						Items = new MenuItem[]
 						{
-						new MenuItem { Text = "Attack", ActivityType = Battle.ActivityType.Attack, Activity = -1, Option = -1 },
-						new MenuItem { Text = "Ability", ActivityType = Battle.ActivityType.Ability, Activity = -1, Option = -1 },
-						new MenuItem { Text = "Spell", ActivityType = Battle.ActivityType.Spell, Activity = -1, Option = -1 },
-						new MenuItem { Text = "Item", ActivityType = Battle.ActivityType.Item, Activity = -1, Option = -1 },
-						new MenuItem { Text = "Run", ActivityType = Battle.ActivityType.Run, Activity = -1, Option = Enumerable.Range(0, Battle.Options[Character].Length).First(x => Battle.Options[Character][x].Type == Battle.ActivityType.Run) },
+							new MenuItem { Text = "Attack", ActivityType = Battle.ActivityType.Attack, Activity = -1, Option = -1 },
+							new MenuItem { Text = "Ability", ActivityType = Battle.ActivityType.Ability, Activity = -1, Option = -1 },
+							new MenuItem { Text = "Spell", ActivityType = Battle.ActivityType.Spell, Activity = -1, Option = -1 },
+							new MenuItem { Text = "Item", ActivityType = Battle.ActivityType.Item, Activity = -1, Option = -1 },
+							new MenuItem { Text = "Run", ActivityType = Battle.ActivityType.Run, Activity = -1, Option = Enumerable.Range(0, Battle.Options[Character].Length).First(x => Battle.Options[Character][x].Type == Battle.ActivityType.Run) },
 						};
 						break;
 
@@ -85,8 +86,6 @@ namespace ConsoleGame
 			{
 				Battle.Actions[Character] = Items[item].Option;
 
-				RpgBattle.UpdateActions();
-
 				var remaining = Enumerable.Range(0, Battle.Actions.Length).Where(x => Battle.Actions[x] == -1).ToArray();
 
 				if (remaining.Length == 0)
@@ -109,6 +108,8 @@ namespace ConsoleGame
 
 			BattleScreen.Draw();
 			Screen.Update();
+
+			RpgBattle.WriteActions();
 		}
 
 		internal struct MenuItem

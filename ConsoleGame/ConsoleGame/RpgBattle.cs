@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Linq;
+using System.Timers;
+using Rpg;
 
 namespace ConsoleGame
 {
 	internal class RpgBattle
 	{
-		internal static void Load()
+		internal static void ReadData()
 		{
 			Battle.AbilityNames = RpgGame.Battle.AbilityTypes.Select(x => "Ability").ToArray();
 			Battle.SpellNames = RpgGame.Battle.SpellTypes.Select(x => "Spell").ToArray();
@@ -28,7 +30,7 @@ namespace ConsoleGame
 			Battle.Actions = Enumerable.Repeat(-1, Battle.Allies.Length).ToArray();
 		}
 
-		internal static void UpdateCharacters()
+		internal static void ReadCharacters()
 		{
 			for (var ally = 0; ally < Battle.Allies.Length; ally++)
 			{
@@ -47,7 +49,7 @@ namespace ConsoleGame
 			}
 		}
 
-		internal static void UpdateOptions()
+		internal static void ReadOptions()
 		{
 			Battle.Options = RpgGame.Battle.AllyOptions.Select(x => x.Select(y => new Battle.Activity
 			{
@@ -59,12 +61,7 @@ namespace ConsoleGame
 			.ToArray();
 		}
 
-		internal static void UpdateActions()
-		{
-			RpgGame.Battle.AllyActions = Battle.Actions;
-		}
-
-		internal static void UpdateEvents()
+		internal static void ReadEvents()
 		{
 			Battle.Events = RpgGame.Battle.Events.Select(x => new Battle.Event
 			{
@@ -107,7 +104,10 @@ namespace ConsoleGame
 
 		private static void Battle_TurnStarting()
 		{
-			UpdateOptions();
+			ReadOptions();
+
+			for (int i = 0; i < Party.Characters.Length; i++)
+				Battle.Actions[i] = -1;
 
 			BattleMenu.Character = 0;
 
@@ -130,9 +130,18 @@ namespace ConsoleGame
 			BattleMenu.Activity = -1;
 
 			BattleMenu.Update();
+			BattleScreen.Draw();
 
-			UpdateEvents();
+			ReadEvents();
 			BattleScreen.DrawEvents();
+		}
+
+		internal static void WriteActions()
+		{
+			for (int i = 0; i < Party.Characters.Length; i++)
+				RpgGame.Battle.AllyActions[i] = Battle.Actions[i];
+
+			RpgGame.Battle.Update();
 		}
 
 		internal static void Disable()

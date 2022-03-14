@@ -179,7 +179,7 @@ namespace RpgGame
 
 					var teleport = Map.Tiles[tile].Value;
 
-					DataMap.Load(Map.Teleports[teleport].Map);
+					MapData.Load(Map.Teleports[teleport].Map);
 					Current = Map.Teleports[teleport].Map;
 					X = Map.Teleports[teleport].X;
 					Y = Map.Teleports[teleport].Y;
@@ -195,7 +195,7 @@ namespace RpgGame
 					{
 						var floor = Floors.Pop();
 
-						DataMap.Load(floor.Map);
+						MapData.Load(floor.Map);
 						Current = floor.Map;
 						X = floor.X;
 						Y = floor.Y;

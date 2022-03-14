@@ -5,7 +5,7 @@ using System.Text;
 
 namespace RpgGame
 {
-	public static class DataBattle
+	public static class BattleData
 	{
 		public static void Load()
 		{

@@ -12,16 +12,36 @@ namespace RpgGame
 		{
 			public string Name;
 			public CharacterType Type;
+
+			public int Level;
+			public int Experience;
+
 			public int Health;
 			public int MaxHealth;
 			public int Power;
 			public int MaxPower;
+
+			public int Strength;
+			public int Agility;
+			public int Intelligence;
+			public int Vitality;
+			public int Luck;
+
+			public int Damage;
+			public int Hits;
+			public int Accuracy;
+			public int Absorb;
+			public int Evade;
 		}
 
 		public enum CharacterType
 		{
 			Fighter,
-			BlackBelt
+			Thief,
+			BlackBelt,
+			RedMage,
+			WhiteMage,
+			BlackMage
 		}
 	}
 }

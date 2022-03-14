@@ -14,10 +14,16 @@ namespace RpgGame
 
 		public static Enemy[] Enemies;
 		public static Activity[][] AllyOptions;
+		public static Status[] AllyStatuses;
 		public static Activity[][] EnemyOptions;
+		public static Status[] EnemyStatuses;
 		public static int[] AllyActions;
 		public static int[] EnemyActions;
+		public static int[] AllyHitMultipliers;
+		public static int[] EnemyHitMultipliers;
+
 		public static Event[] Events;
+
 		public static BattleResults Result;
 
 		public static EnemyType[] EnemyTypes = new EnemyType[128];
@@ -26,7 +32,7 @@ namespace RpgGame
 		public static MagicType[] PotionTypes = new MagicType[2];
 		public static MagicType[] AbilityTypes = new MagicType[26];
 
-		public static System.Threading.Timer Timer;
+		private static readonly Random Random = new Random();
 
 		public static void Enable()
 		{
@@ -38,13 +44,14 @@ namespace RpgGame
 			AllyOptions = Enumerable.Repeat(new Activity[0], Party.Characters.Length).ToArray();
 			EnemyOptions = Enumerable.Repeat(new Activity[0], Enemies.Length).ToArray();
 
+			AllyStatuses = Enumerable.Repeat(Status.None, Party.Characters.Length).ToArray();
+			EnemyStatuses = Enumerable.Repeat(Status.None, Enemies.Length).ToArray();
+
 			BattleStarting?.Invoke();
 
 			UpdateOptions();
 
 			TurnStarting?.Invoke();
-
-			Timer = new System.Threading.Timer(Timer_Callback, null, 1000, 1000);
 		}
 
 		private static void UpdateOptions()
@@ -53,208 +60,299 @@ namespace RpgGame
 			{
 				var options = new List<Activity>();
 
-				options.AddRange(Enemies.Select((x, i) => new Activity { Type = ActivityType.Attack, TargetType = TargetType.Enemy, Target = i }));
+				options.AddRange(Enemies.Where((x, i) => !EnemyStatuses[i].HasFlag(Status.Dead)).Select((x, i) => new Activity { Type = ActivityType.Attack, TargetType = TargetType.Enemy, Target = i }));
 				options.Add(new Activity { Type = ActivityType.Run });
 
 				AllyOptions[ally] = options.ToArray();
 				AllyActions[ally] = -1;
 			}
 
-			for (var enemy = 0; enemy < Enemies.Length; enemy++)
-			{
-				var options = new List<Activity>();
+			//for (var enemy = 0; enemy < Enemies.Length; enemy++)
+			//{
+			//	var options = new List<Activity>();
 
-				options.AddRange(Party.Characters.Select((x, i) => new Activity { Type = ActivityType.Attack, TargetType = TargetType.Ally, Target = i }));
-				// Should this be here?
-				//options.Add(new Activity { Type = ActivityType.Run });
+			//	options.AddRange(Party.Characters.Select((x, i) => new Activity { Type = ActivityType.Attack, TargetType = TargetType.Ally, Target = i }));
+			//	// Should this be here?
+			//	//options.Add(new Activity { Type = ActivityType.Run });
 
-				var enemyType = EnemyTypes[Enemies[enemy].Type];
+			//	var enemyType = EnemyTypes[Enemies[enemy].Type];
 
-				if (enemyType.Logic != 0xFF)
-				{
-					var logicType = LogicTypes[enemyType.Logic];
+			//	if (enemyType.Logic != 0xFF)
+			//	{
+			//		var logicType = LogicTypes[enemyType.Logic];
 
-					foreach (var spell in logicType.Spells)
-					{
-						if (spell != 0xFF)
-						{
-							var spellType = SpellTypes[spell];
+			//		foreach (var spell in logicType.Spells)
+			//		{
+			//			if (spell != 0xFF)
+			//			{
+			//				var spellType = SpellTypes[spell];
 
-							switch (spellType.Target)
-							{
-								case MagicTarget.Enemy:
-									options.AddRange(Party.Characters.Select((x, i) => new Activity { Type = ActivityType.Spell, Value = spell, TargetType = TargetType.Ally, Target = i }));
-									break;
-							}
-						}
-					}
+			//				switch (spellType.Target)
+			//				{
+			//					case MagicTarget.Enemy:
+			//						options.AddRange(Party.Characters.Select((x, i) => new Activity { Type = ActivityType.Spell, Value = spell, TargetType = TargetType.Ally, Target = i }));
+			//						break;
+			//				}
+			//			}
+			//		}
 
-					foreach (var ability in logicType.Abilities)
-					{
-						if (ability != 0xFF)
-						{
-							var abilityType = AbilityTypes[ability];
+			//		foreach (var ability in logicType.Abilities)
+			//		{
+			//			if (ability != 0xFF)
+			//			{
+			//				var abilityType = AbilityTypes[ability];
 
-							switch (abilityType.Target)
-							{
-								case MagicTarget.Enemy:
-									options.AddRange(Party.Characters.Select((x, i) => new Activity { Type = ActivityType.Ability, Value = ability, TargetType = TargetType.Ally, Target = i }));
-									break;
-							}
-						}
-					}
-				}
+			//				switch (abilityType.Target)
+			//				{
+			//					case MagicTarget.Enemy:
+			//						options.AddRange(Party.Characters.Select((x, i) => new Activity { Type = ActivityType.Ability, Value = ability, TargetType = TargetType.Ally, Target = i }));
+			//						break;
+			//				}
+			//			}
+			//		}
+			//	}
 
-				EnemyOptions[enemy] = options.ToArray();
+			//	EnemyOptions[enemy] = options.ToArray();
 
-				EnemyActions[enemy] = -1;
-			}
+			//	EnemyActions[enemy] = -1;
+			//}
 		}
 
 		public static void UpdateEvents()
 		{
 			var events = new List<Event>();
 
-			var characters = Party.Characters.Select((x, i) => new
+			// Randomize order
+			var allyActions = Party.Characters.Select((x, i) => new
 			{
 				Action = AllyOptions[i][AllyActions[i]],
 				Source = i,
 				SourceType = SourceType.Ally,
-				Accuracy = 0,
-				Hits = 1,
-				Damage = 10,
-				Evade = AllyOptions[i][AllyActions[i]].TargetType == TargetType.Enemy ? EnemyTypes[Enemies[AllyOptions[i][AllyActions[i]].Target].Type].Evade : 0
-			}).Concat(Enemies.Select((x, i) => new
+				Party.Characters[i].Hits,
+				Party.Characters[i].Accuracy,
+				Party.Characters[i].Damage,
+			});
+
+			var enemyActions = Enemies.Select((x, i) => new
 			{
-				Action = EnemyOptions[i][EnemyActions[i]],
+				Action = EnemyAction(i),
 				Source = i,
 				SourceType = SourceType.Enemy,
-				EnemyTypes[Enemies[i].Type].Accuracy,
 				EnemyTypes[Enemies[i].Type].Hits,
+				EnemyTypes[Enemies[i].Type].Accuracy,
 				EnemyTypes[Enemies[i].Type].Damage,
-				Evade = EnemyOptions[i][EnemyActions[i]].TargetType == TargetType.Enemy ? EnemyTypes[Enemies[EnemyOptions[i][EnemyActions[i]].Target].Type].Evade : 0
-			})).ToArray();
+			});
 
-			var random = new Random();
+			var characterActions = allyActions.Concat(enemyActions).ToArray();
 
 			for (var x = 0; x < 16; x++)
 			{
-				var a = random.Next(0, characters.Length);
-				var b = random.Next(0, characters.Length);
+				var a = Random.Next(0, characterActions.Length);
+				var b = Random.Next(0, characterActions.Length);
 
-				var temp = characters[a];
-				characters[a] = characters[b];
-				characters[b] = temp;
+				var temp = characterActions[a];
+				characterActions[a] = characterActions[b];
+				characterActions[b] = temp;
 			}
 
-			foreach (var character in characters)
+			foreach (var action in characterActions)
 			{
-				if (character.SourceType == SourceType.Ally)
-				{
-					if (Party.Characters[character.Source].Health == 0)
-						continue;
-				}
-				else if (Enemies[character.Source].Health == 0)
-					continue;
-
-				switch (character.Action.Type)
+				switch (action.Action.Type)
 				{
 					case ActivityType.Attack:
-						if (character.Action.TargetType == TargetType.Ally)
+						if (action.Action.TargetType == TargetType.Ally)
 						{
-							if (Party.Characters[character.Action.Target].Health == 0)
+							if (AllyStatuses[action.Action.Target].HasFlag(Status.Stone) ||
+								AllyStatuses[action.Action.Target].HasFlag(Status.Dead))
 								continue;
 						}
-						else if (Enemies[character.Action.Target].Health == 0)
+						else if (EnemyStatuses[action.Action.Target].HasFlag(Status.Stone) ||
+								EnemyStatuses[action.Action.Target].HasFlag(Status.Dead))
 							continue;
 
 						var hits = 0;
 						var damage = 0;
 
-						for (var hit = 0; hit < character.Hits; hit++)
+						for (var hit = 0; hit < action.Hits; hit++)
 						{
-							var chance = 168 + character.Accuracy - character.Evade;
+							var chance = 168;
 
-							if (random.Next(200) + 1 < chance)
+							if (action.SourceType == SourceType.Ally)
+							{
+								if (AllyStatuses[action.Source].HasFlag(Status.Dark))
+									chance -= 40;
+
+								// TODO: Check weakness
+							}
+							else
+							{
+								if (EnemyStatuses[action.Source].HasFlag(Status.Dark))
+									chance -= 40;
+							}
+
+							if (action.Action.TargetType == TargetType.Enemy)
+							{
+								if (EnemyStatuses[action.Action.Target].HasFlag(Status.Dark))
+									chance += 40;
+							}
+							else
+							{
+								if (AllyStatuses[action.Action.Target].HasFlag(Status.Dark))
+									chance += 40;
+							}
+
+							chance += action.Accuracy;
+
+							if (chance > 255)
+								chance = 255;
+
+							if (action.Action.TargetType == TargetType.Enemy)
+							{
+								chance -= EnemyTypes[Enemies[action.Action.Target].Type].Evade;
+							}
+							else if (action.Action.TargetType == TargetType.Ally)
+							{
+								chance -= Party.Characters[action.Action.Target].Agility + 48;
+							}
+
+							if (chance < 0)
+								chance = 0;
+
+							var criticalChance = 0;
+
+							// TODO: Calculate Critical Hit Chance
+
+							var success = false;
+							var critical = false;
+
+							var value = Random.Next(201);
+
+							if (value != 200 &&
+								value <= chance)
+							{
+								success = true;
+
+								if (value <= criticalChance)
+									critical = true;
+							}
+
+							if (success)
 							{
 								hits++;
 
-								damage += character.Damage;
-								damage += random.Next(character.Damage) + 1;
+								damage += action.Damage;
+								damage += Random.Next(action.Damage) + 1;
 							}
 						}
 
-						if(hits != 0)
+						if (hits != 0)
 						{
-							events.Add(new Event { Type = EventType.Hit, Source = character.Source, SourceType = character.SourceType, Target = character.Action.Target, TargetType = character.Action.TargetType, Value = hits });
+							events.Add(new Event { Type = EventType.Hit, Source = action.Source, SourceType = action.SourceType, Target = action.Action.Target, TargetType = action.Action.TargetType, Value = hits });
 
-							events.Add(new Event { Type = EventType.Health, Source = character.Source, SourceType = character.SourceType, Target = character.Action.Target, TargetType = character.Action.TargetType, Value = -damage });
+							events.Add(new Event { Type = EventType.Health, Source = action.Source, SourceType = action.SourceType, Target = action.Action.Target, TargetType = action.Action.TargetType, Value = -damage });
 
-							if (character.Action.TargetType == TargetType.Ally)
-								Party.Characters[character.Action.Target].Health -= Math.Min(damage, Party.Characters[character.Action.Target].Health);
+							if (action.Action.TargetType == TargetType.Ally)
+							{
+								Party.Characters[action.Action.Target].Health -= Math.Min(damage, Party.Characters[action.Action.Target].Health);
+
+								if (Party.Characters[action.Action.Target].Health == 0)
+									AllyStatuses[action.Action.Target] |= Status.Dead;
+							}
 							else
-								Enemies[character.Action.Target].Health -= Math.Min(damage, Enemies[character.Action.Target].Health);
+							{
+								Enemies[action.Action.Target].Health -= Math.Min(damage, Enemies[action.Action.Target].Health);
+
+								if (Enemies[action.Action.Target].Health == 0)
+									EnemyStatuses[action.Action.Target] |= Status.Dead;
+							}
 						}
 						else
-							events.Add(new Event { Type = EventType.Miss, Source = character.Source, SourceType = character.SourceType, Target = character.Action.Target, TargetType = character.Action.TargetType });
+							events.Add(new Event { Type = EventType.Miss, Source = action.Source, SourceType = action.SourceType, Target = action.Action.Target, TargetType = action.Action.TargetType });
 						break;
 
 					case ActivityType.Ability:
-						events.Add(new Event { Type = (EventType)character.Action.Type, Source = character.Source, SourceType = character.SourceType, Target = character.Action.Target, TargetType = character.Action.TargetType, Value = character.Action.Value });
+						events.Add(new Event { Type = (EventType)action.Action.Type, Source = action.Source, SourceType = action.SourceType, Target = action.Action.Target, TargetType = action.Action.TargetType, Value = action.Action.Value });
 
-						events.AddRange(Magic(AbilityTypes[character.Action.Value], character.Action, character.Source, character.SourceType, character.Action.Target, character.Action.TargetType, character.Accuracy, character.Hits, character.Damage, character.Evade, random));
+						events.AddRange(Magic(AbilityTypes[action.Action.Value], action.Action, action.Source, action.SourceType, action.Action.Target, action.Action.TargetType, action.Accuracy, action.Hits, action.Damage));
 						break;
 
 					case ActivityType.Spell:
-						events.Add(new Event { Type = (EventType)character.Action.Type, Source = character.Source, SourceType = character.SourceType, Target = character.Action.Target, TargetType = character.Action.TargetType, Value = character.Action.Value });
+						events.Add(new Event { Type = (EventType)action.Action.Type, Source = action.Source, SourceType = action.SourceType, Target = action.Action.Target, TargetType = action.Action.TargetType, Value = action.Action.Value });
 
-						events.AddRange(Magic(SpellTypes[character.Action.Value], character.Action, character.Source, character.SourceType, character.Action.Target, character.Action.TargetType, character.Accuracy, character.Hits, character.Damage, character.Evade, random));
+						events.AddRange(Magic(SpellTypes[action.Action.Value], action.Action, action.Source, action.SourceType, action.Action.Target, action.Action.TargetType, action.Accuracy, action.Hits, action.Damage));
 						break;
 
 					case ActivityType.Item:
-						events.Add(new Event { Type = (EventType)character.Action.Type, Source = character.Source, SourceType = character.SourceType, Target = character.Action.Target, TargetType = character.Action.TargetType, Value = character.Action.Value });
+						events.Add(new Event { Type = (EventType)action.Action.Type, Source = action.Source, SourceType = action.SourceType, Target = action.Action.Target, TargetType = action.Action.TargetType, Value = action.Action.Value });
 
-						events.AddRange(Magic(PotionTypes[character.Action.Value], character.Action, character.Source, character.SourceType, character.Action.Target, character.Action.TargetType, character.Accuracy, character.Hits, character.Damage, character.Evade, random));
+						events.AddRange(Magic(PotionTypes[action.Action.Value], action.Action, action.Source, action.SourceType, action.Action.Target, action.Action.TargetType, action.Accuracy, action.Hits, action.Damage));
 						break;
 
 					case ActivityType.Run:
-						if (random.Next(2) == 0)
+						if (Random.Next(2) == 0)
 						{
-							events.Add(new Event { Type = EventType.Escape, Source = character.Source, SourceType = character.SourceType, Target = character.Action.Target, TargetType = character.Action.TargetType });
+							events.Add(new Event { Type = EventType.Escape, Source = action.Source, SourceType = action.SourceType, Target = action.Action.Target, TargetType = action.Action.TargetType });
 
 							Result = BattleResults.Escape;
 						}
 						else
-							events.Add(new Event { Type = EventType.Trapped, Source = character.Source, SourceType = character.SourceType, Target = character.Action.Target, TargetType = character.Action.TargetType });
+							events.Add(new Event { Type = EventType.Trapped, Source = action.Source, SourceType = action.SourceType, Target = action.Action.Target, TargetType = action.Action.TargetType });
 						break;
 				}
 
-				if (Result != BattleResults.None ||
-					Party.Characters.All(x => x.Health == 0) ||
-					Enemies.All(x => x.Health == 0))
+				if (AllyStatuses.All(x => x.HasFlag(Status.Stone) ||
+					x.HasFlag(Status.Dead)) ||
+					EnemyStatuses.All(x => x.HasFlag(Status.Stone) ||
+						x.HasFlag(Status.Dead)))
 					break;
 			}
 
 			Events = events.ToArray();
 		}
 
-		private static IEnumerable<Event> Magic(MagicType type, Activity action, int source, SourceType sourceType, int target, TargetType targetType, int accuracy, int hits, int damage, int evade, Random random)
+		private static Activity EnemyAction(int enemy)
+		{
+			if (Enemies[enemy].Statuses.HasFlag(Status.Stun) ||
+				Enemies[enemy].Statuses.HasFlag(Status.Stone) ||
+				Enemies[enemy].Statuses.HasFlag(Status.Dead))
+			{
+				return new Activity
+				{
+					Type = ActivityType.None
+				};
+			}
+
+			return new Activity
+			{
+				Type = ActivityType.None
+			};
+		}
+
+		private static IEnumerable<Event> Magic(MagicType type, Activity action, int source, SourceType sourceType, int target, TargetType targetType, int accuracy, int hits, int damage)
 		{
 			switch (type.Effect)
 			{
 				case MagicEffect.Damage:
 					damage = action.Value;
-					damage += random.Next(action.Value) + 1;
+					damage += Random.Next(action.Value) + 1;
 
 					switch (targetType)
 					{
 						case TargetType.Ally:
 							Party.Characters[target].Health -= Math.Min(damage, Party.Characters[target].Health);
+
+							if (Party.Characters[target].Health == 0)
+								AllyStatuses[target] |= Status.Dead;
+
 							yield return new Event { Type = EventType.Health, Source = source, SourceType = sourceType, Target = target, TargetType = targetType, Value = -damage };
 							break;
 
 						case TargetType.Enemy:
 							Enemies[target].Health -= Math.Min(damage, Enemies[target].Health);
+
+							if (Enemies[target].Health == 0)
+								EnemyStatuses[target] |= Status.Dead;
+
 							yield return new Event { Type = EventType.Health, Source = source, SourceType = sourceType, Target = target, TargetType = targetType, Value = -damage };
 							break;
 
@@ -262,6 +360,9 @@ namespace RpgGame
 							for (var character = 0; character < Party.Characters.Length; character++)
 							{
 								Party.Characters[character].Health -= Math.Min(damage, Party.Characters[character].Health);
+
+								if (Party.Characters[character].Health == 0)
+									AllyStatuses[character] |= Status.Dead;
 
 								yield return new Event { Type = EventType.Health, Source = source, SourceType = sourceType, Target = character, TargetType = targetType, Value = -damage };
 							}
@@ -271,6 +372,9 @@ namespace RpgGame
 							for (var enemy = 0; enemy < Enemies.Length; enemy++)
 							{
 								Enemies[enemy].Health -= Math.Min(damage, Enemies[enemy].Health);
+
+								if (Enemies[enemy].Health == 0)
+									EnemyStatuses[enemy] |= Status.Dead;
 
 								yield return new Event { Type = EventType.Health, Source = source, SourceType = sourceType, Target = enemy, TargetType = targetType, Value = -damage };
 							}
@@ -284,26 +388,23 @@ namespace RpgGame
 			}
 		}
 
-		private static void Timer_Callback(object state)
+		public static void Update()
 		{
-			Timer.Change(System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite);
-
-			if (AllyActions.All(x => x != -1) &&
-				EnemyActions.All(x => x != -1))
+			if (AllyActions.All(x => x != -1))
 			{
 				UpdateEvents();
 
 				TurnComplete?.Invoke();
 
-				if (Party.Characters.All(x => x.Health == 0))
+				if (AllyStatuses.All(x => x.HasFlag(Status.Stone) ||
+					x.HasFlag(Status.Dead)))
 				{
-					Disable();
 					Result = BattleResults.Defeat;
 					BattleComplete?.Invoke();
 				}
-				else if (Enemies.All(x => x.Health == 0))
+				else if (EnemyStatuses.All(x => x.HasFlag(Status.Stone) ||
+					x.HasFlag(Status.Dead)))
 				{
-					Disable();
 					Result = BattleResults.Victory;
 					BattleComplete?.Invoke();
 				}
@@ -312,22 +413,13 @@ namespace RpgGame
 					UpdateOptions();
 
 					TurnStarting?.Invoke();
-
-					Timer.Change(1000, 1000);
 				}
 			}
-			else
-				Timer.Change(1000, 1000);
+
 		}
 
 		public static void Disable()
 		{
-			if (Timer != null)
-			{
-				Timer.Change(0, 0);
-				Timer.Dispose();
-				Timer = null;
-			}
 		}
 
 		public struct Enemy
@@ -337,6 +429,7 @@ namespace RpgGame
 			public int MaxHealth;
 			public int Power;
 			public int MaxPower;
+			public Status Statuses;
 		}
 
 		public struct Activity
@@ -349,11 +442,12 @@ namespace RpgGame
 
 		public enum ActivityType
 		{
+			None,
 			Attack,
 			Ability,
 			Spell,
 			Item,
-			Run
+			Run,
 		}
 
 		public enum TargetType

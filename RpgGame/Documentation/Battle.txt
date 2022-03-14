@@ -1,0 +1,104 @@
+﻿Game
+	Session
+		Battle
+			Battle Start
+			Turn Start
+				Enumerate Available Options Per Ally
+				Player Choose Option Per Ally
+				Use Logic To Choose Option Per Enemy
+					If Stun Status
+						If Random Number Between 0 And 255 Is Less Than 25
+							Remove Stun Status
+							End Turn
+					If Sleep Status
+						Remove Sleep Status
+						End Turn
+					If Confuse Status
+						If Random Number Between 0 And 255 Is Less Than 64
+							Remove Confuse Status
+							End Turn
+						Else
+							Set Action To Cast FIRE On Random Enemy Without Dialogs
+					Check Morale
+						If Random Number Between 0 And 32 Plus Enemy Morale Minus Party Leader Level Times 2 Is Less Than 80
+							Set Action To Run
+					Check Logic
+						If Logic Is -1
+							Set Action To Attack Random Enemy
+						Else If Random Number Between 0 and 128 Is Less Than Magic Chance
+							Get Next Spell From Spell Sequence
+							Set Action To Spell
+						Else If Random Number Between 0 and 128 Is Less Than Special Chance
+							Get Next Special From Special Sequence
+							Set Action To Special
+						Else
+							Set Action To Attack Random Enemy
+
+				Randomize Character Action Order
+				For Each Character
+					If Action Is Attack
+					If Action Is Magic Or Special
+						If Source Has Mute Status
+							Show Ineffective Dialog
+						Else If Source Is Enemy
+							If Target Type Is All Enemies
+							If Target Type Is Random Enemy
+								Get Random Enemy
+								While Random Enemy Has Dead Or Stone Status
+									Get Random Enemy
+							If Target Type Is Self
+							If Target Type Is All Allies
+							If Target Type Is One Ally
+							If Magic Effect Is None
+								Show Ineffective Message
+							If Magic Effect Is Damage
+								Set Damage To Spell Power
+								Set Critical Chance To 148
+								If Target Resistant To Spell Element
+									Set Critical Chance To Zero
+									Set Damage To Damage Divided By Two
+								If Target Weak To Spell Element
+									Add 40 To Critical Chance
+									Set Damage To Damage Times One Point Five
+								Apply Magic/Special Damage
+							If Magic Effect Is Holy
+							If Magic Effect Is Status
+							If Magic Effect Is Slow
+							If Magic Effect Is Fear
+							If Magic Effect Is Health
+							If Magic Effect Is Health2
+							If Magic Effect Is Cure
+							If Magic Effect Is Absorb
+							If Magic Effect Is Resist
+							If Magic Effect Is Attack
+							If Magic Effect Is Fast
+							If Magic Effect Is Attack2
+							If Magic Effect Is Stun
+							If Magic Effect Is CureAll
+							If Magic Effect Is Evade
+							If Magic Effect Is Weak
+							If Magic Effect Is Status2
+						Else If Source Is Ally
+							If Target Type Is All Enemies
+							If Target Type Is Random Enemy
+							If Target Type Is Self
+							If Target Type Is All Allies
+							If Target Type Is One Ally
+					If Action Is Item
+					If Action Is Run
+						If Character Is Enemy
+							Hide Character
+							Add Dead Status
+							Subtract Gold Reward
+							Subtract Experience Reward
+
+Apply Magic/Special Damage
+	Add Spell Chance To Critical Chance
+	Subtract Target Magic Defense From Critical Chance
+	Add Random Number Between 0 and Spell Damage to Spell Damage
+	If Random Number Between 0 and 200 is less than 200 and less than or equal to Critical Chance
+		Set Damage To Damage Times 2
+	Subtract Damage From Target HP
+	If Target HP <= 0
+		Add Dead Status To Target
+		Set Target HP To 0

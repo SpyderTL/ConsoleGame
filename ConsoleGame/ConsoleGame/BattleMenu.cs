@@ -86,14 +86,23 @@ namespace ConsoleGame
 			{
 				Battle.Actions[Character] = Items[item].Option;
 
-				var remaining = Enumerable.Range(0, Battle.Actions.Length).Where(x => Battle.Actions[x] == -1).ToArray();
+				for (int ally = 0; ally <= Party.Characters.Length; ally++)
+				{
+					if (ally == Party.Characters.Length)
+					{
+						Character = -1;
+						break;
+					}
 
-				if (remaining.Length == 0)
-					Character = -1;
-				else if (remaining.Any(x => x > Character))
-					Character = remaining.First(x => x > Character);
-				else
-					Character = remaining.First();
+					if (ally <= Character)
+						continue;
+
+					if (Battle.Options[ally].Length == 0)
+						continue;
+
+					Character = ally;
+					break;
+				}
 
 				ActivityType = -1;
 				Activity = -1;

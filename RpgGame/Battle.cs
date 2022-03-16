@@ -44,7 +44,7 @@ namespace RpgGame
 			AllyOptions = Enumerable.Repeat(new Activity[0], Party.Characters.Length).ToArray();
 			EnemyOptions = Enumerable.Repeat(new Activity[0], Enemies.Length).ToArray();
 
-			AllyStatuses = Enumerable.Repeat(Status.None, Party.Characters.Length).ToArray();
+			AllyStatuses = Party.Characters.Select(x => x.Health == 0 ? Status.Dead : Status.None).ToArray();
 			EnemyStatuses = Enumerable.Repeat(Status.None, Enemies.Length).ToArray();
 
 			BattleStarting?.Invoke();
@@ -60,8 +60,18 @@ namespace RpgGame
 			{
 				var options = new List<Activity>();
 
-				options.AddRange(Enemies.Where((x, i) => !EnemyStatuses[i].HasFlag(Status.Dead)).Select((x, i) => new Activity { Type = ActivityType.Attack, TargetType = TargetType.Enemy, Target = i }));
-				options.Add(new Activity { Type = ActivityType.Run });
+				if (!AllyStatuses[ally].HasFlag(Status.Stone) &&
+					!AllyStatuses[ally].HasFlag(Status.Dead) &&
+					!AllyStatuses[ally].HasFlag(Status.Sleep))
+				{
+					for (var enemy = 0; enemy < Enemies.Length; enemy++)
+					{
+						if (!EnemyStatuses[enemy].HasFlag(Status.Dead))
+							options.Add(new Activity { Type = ActivityType.Attack, TargetType = TargetType.Enemy, Target = enemy });
+					}
+
+					options.Add(new Activity { Type = ActivityType.Run });
+				}
 
 				AllyOptions[ally] = options.ToArray();
 				AllyActions[ally] = -1;
@@ -123,15 +133,17 @@ namespace RpgGame
 			var events = new List<Event>();
 
 			// Randomize order
-			var allyActions = Party.Characters.Select((x, i) => new
-			{
-				Action = AllyOptions[i][AllyActions[i]],
-				Source = i,
-				SourceType = SourceType.Ally,
-				Party.Characters[i].Hits,
-				Party.Characters[i].Accuracy,
-				Party.Characters[i].Damage,
-			});
+			var allyActions = Enumerable.Range(0, Party.Characters.Length)
+				.Where(i => AllyActions[i] != -1)
+				.Select(i => new
+				{
+					Action = AllyOptions[i][AllyActions[i]],
+					Source = i,
+					SourceType = SourceType.Ally,
+					Party.Characters[i].Hits,
+					Party.Characters[i].Accuracy,
+					Party.Characters[i].Damage,
+				});
 
 			var enemyActions = Enemies.Select((x, i) => new
 			{
@@ -157,6 +169,31 @@ namespace RpgGame
 
 			foreach (var action in characterActions)
 			{
+				if (action.SourceType == SourceType.Ally)
+				{
+					if (AllyStatuses[action.Source].HasFlag(Status.Stone) ||
+						AllyStatuses[action.Source].HasFlag(Status.Dead))
+						continue;
+
+					if (AllyStatuses[action.Source].HasFlag(Status.Sleep))
+					{
+						AllyStatuses[action.Source] &= ~Status.Sleep;
+						continue;
+					}
+				}
+				else
+				{
+					if (EnemyStatuses[action.Source].HasFlag(Status.Stone) ||
+						EnemyStatuses[action.Source].HasFlag(Status.Dead))
+						continue;
+
+					if (EnemyStatuses[action.Source].HasFlag(Status.Sleep))
+					{
+						EnemyStatuses[action.Source] &= ~Status.Sleep;
+						continue;
+					}
+				}
+
 				switch (action.Action.Type)
 				{
 					case ActivityType.Attack:
@@ -322,10 +359,29 @@ namespace RpgGame
 				};
 			}
 
-			return new Activity
+			while (true)
 			{
-				Type = ActivityType.None
-			};
+				var target = 0;
+				var value = Random.Next(256);
+
+				if (value < 0x20)
+					target++;
+
+				if (value < 0x40)
+					target++;
+
+				if (value < 0x80)
+					target++;
+
+				if(!AllyStatuses[target].HasFlag(Status.Stone) &&
+					!AllyStatuses[target].HasFlag(Status.Dead))
+					return new Activity
+					{
+						Type = ActivityType.Attack,
+						TargetType = TargetType.Ally,
+						Target = target
+					};
+			}
 		}
 
 		private static IEnumerable<Event> Magic(MagicType type, Activity action, int source, SourceType sourceType, int target, TargetType targetType, int accuracy, int hits, int damage)
@@ -390,7 +446,11 @@ namespace RpgGame
 
 		public static void Update()
 		{
-			if (AllyActions.All(x => x != -1))
+			if (Enumerable.Range(0, Party.Characters.Length)
+				.All(x => AllyActions[x] != -1 ||
+					AllyStatuses[x].HasFlag(Status.Sleep) ||
+					AllyStatuses[x].HasFlag(Status.Stone) ||
+					AllyStatuses[x].HasFlag(Status.Dead)))
 			{
 				UpdateEvents();
 

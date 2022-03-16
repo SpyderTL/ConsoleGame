@@ -109,7 +109,9 @@ namespace ConsoleGame
 			for (int i = 0; i < Party.Characters.Length; i++)
 				Battle.Actions[i] = -1;
 
-			BattleMenu.Character = 0;
+			BattleMenu.Character = Enumerable.Range(0, Party.Characters.Length)
+				.First(x => !RpgGame.Battle.AllyStatuses[x].HasFlag(RpgGame.Battle.Status.Stone) &&
+					!RpgGame.Battle.AllyStatuses[x].HasFlag(RpgGame.Battle.Status.Dead));
 
 			BattleMenu.ActivityType = -1;
 			BattleMenu.Activity = -1;

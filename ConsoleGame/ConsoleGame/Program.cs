@@ -132,7 +132,6 @@ namespace ConsoleGame
 
 								RpgBattle.ReadData();
 								RpgBattle.ReadCharacters();
-								RpgGame.BattleLogic.Enable();
 
 								Game.Mode = Game.GameMode.Battle;
 								break;
@@ -191,7 +190,6 @@ namespace ConsoleGame
 					case Game.GameMode.Battle:
 						RpgBattle.ReadData();
 						RpgBattle.ReadCharacters();
-						RpgGame.BattleLogic.Enable();
 
 						InputBattle.Enable();
 						RpgBattle.Enable();

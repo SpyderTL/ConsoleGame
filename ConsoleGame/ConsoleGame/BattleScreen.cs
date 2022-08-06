@@ -25,11 +25,11 @@ namespace ConsoleGame
 			Screen.Update();
 			Thread.Sleep(500);
 
-			Screen.DrawRectangle('>', 0, 0, 18, 14);
+			Screen.DrawRectangle('#', 0, 0, 18, 14);
 			Screen.Update();
 			Thread.Sleep(500);
 
-			Screen.DrawRectangle('<', 0, 24, 12, 39);
+			Screen.DrawRectangle('#', 0, 24, 12, 39);
 			Screen.Update();
 			Thread.Sleep(500);
 
@@ -67,8 +67,8 @@ namespace ConsoleGame
 		{
 			Screen.Clear();
 
-			Screen.DrawRectangle('>', 0, 0, 18, 14);
-			Screen.DrawRectangle('<', 0, 24, 12, 39);
+			Screen.DrawRectangle('#', 0, 0, 18, 14);
+			Screen.DrawRectangle('#', 0, 24, 12, 39);
 
 			for (var ally = 0; ally < Battle.Allies.Length; ally++)
 			{
@@ -94,7 +94,7 @@ namespace ConsoleGame
 			if (BattleMenu.Character != -1)
 			{
 				Screen.FillRectangle(' ', (BattleMenu.Character * 4) + 1, 14, (BattleMenu.Character * 4) + BattleMenu.Items.Length + 2, 26);
-				Screen.DrawRectangle('>', (BattleMenu.Character * 4) + 0, 13, (BattleMenu.Character * 4) + BattleMenu.Items.Length + 3, 27);
+				Screen.DrawRectangle('#', (BattleMenu.Character * 4) + 0, 13, (BattleMenu.Character * 4) + BattleMenu.Items.Length + 3, 27);
 
 				for (var item = 0; item < BattleMenu.Items.Length; item++)
 					Screen.DrawString((item + 1).ToString() + ") " + BattleMenu.Items[item].Text, 15, (BattleMenu.Character * 4) + 2 + item);
@@ -327,10 +327,54 @@ namespace ConsoleGame
 						Thread.Sleep(500);
 						break;
 
+					case Battle.EventType.Evade:
+						Screen.FillRectangle(' ', 18, 20, 21, 29);
+						Screen.DrawRectangle('#', 17, 19, 22, 30);
+
+						Screen.DrawString("Evade Up", 21, 19);
+						Screen.Update();
+
+						Thread.Sleep(1500);
+
+						if (e.TargetType == Battle.TargetType.Ally)
+						{
+							Battle.Allies[e.Target].Health += e.Value;
+
+							if (Battle.Allies[e.Target].Health < 0)
+								Battle.Allies[e.Target].Health = 0;
+							else if (Battle.Allies[e.Target].Health > Battle.Allies[e.Target].MaxHealth)
+								Battle.Allies[e.Target].Health = Battle.Allies[e.Target].MaxHealth;
+						}
+						else
+						{
+							Battle.Enemies[e.Target].Health += e.Value;
+
+							if (Battle.Enemies[e.Target].Health < 0)
+								Battle.Enemies[e.Target].Health = 0;
+							else if (Battle.Enemies[e.Target].Health > Battle.Enemies[e.Target].MaxHealth)
+								Battle.Enemies[e.Target].Health = Battle.Enemies[e.Target].MaxHealth;
+						}
+
+						Draw();
+						Screen.Update();
+
+						Thread.Sleep(500);
+						break;
+
 					case Battle.EventType.Power:
 						break;
 
-					case Battle.EventType.Inflict:
+					case Battle.EventType.Status:
+						//Screen.FillRectangle(' ', 18, 7, 21, 15);
+						//Screen.DrawRectangle('#', 17, 6, 22, 16);
+
+						//Screen.DrawString("Status!", 8, 19);
+						//Screen.Update();
+
+						//Thread.Sleep(1500);
+
+						Draw();
+						Screen.Update();
 						break;
 
 					case Battle.EventType.Cure:

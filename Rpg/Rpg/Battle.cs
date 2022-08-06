@@ -55,8 +55,8 @@ namespace Rpg
 		public enum TargetType
 		{
 			Enemy,
-			Enemies,
 			Ally,
+			Enemies,
 			Allies
 		}
 
@@ -86,12 +86,13 @@ namespace Rpg
 			Miss,
 			Health,
 			Power,
-			Inflict,
+			Status,
 			Cure,
 			Resist,
 			Weak,
 			Escape,
-			Trapped
+			Trapped,
+			Evade
 		}
 
 		public enum BattleMode

@@ -9,9 +9,9 @@ namespace ConsoleGame
 	{
 		internal static void ReadData()
 		{
-			Battle.AbilityNames = RpgGame.Battle.AbilityTypes.Select(x => "Ability").ToArray();
-			Battle.SpellNames = RpgGame.Battle.SpellTypes.Select(x => "Spell").ToArray();
-			Battle.ItemNames = RpgGame.Battle.PotionTypes.Select(x => "Item").ToArray();
+			Battle.AbilityNames = RpgGame.Battle.AbilityTypes.Select(x => x.Name).ToArray();
+			Battle.SpellNames = RpgGame.Battle.SpellTypes.Select(x => x.Name).ToArray();
+			Battle.ItemNames = RpgGame.Battle.PotionTypes.Select(x => x.Name).ToArray();
 
 			Battle.Allies = new Battle.Character[Party.Characters.Length];
 
@@ -51,13 +51,14 @@ namespace ConsoleGame
 
 		internal static void ReadOptions()
 		{
-			Battle.Options = RpgGame.Battle.AllyOptions.Select(x => x.Select(y => new Battle.Activity
-			{
-				Type = (Battle.ActivityType)y.Type,
-				Value = y.Value,
-				TargetType = (Battle.TargetType)y.TargetType,
-				Target = y.Target,
-			}).ToArray())
+			Battle.Options = RpgGame.Battle.AllyOptions
+				.Select(x => x.Select(y => new Battle.Activity
+				{
+					Type = (Battle.ActivityType)y.Type,
+					Value = y.Value,
+					TargetType = (Battle.TargetType)y.TargetType,
+					Target = y.Target,
+				}).ToArray())
 			.ToArray();
 		}
 
@@ -110,8 +111,12 @@ namespace ConsoleGame
 				Battle.Actions[i] = -1;
 
 			BattleMenu.Character = Enumerable.Range(0, Party.Characters.Length)
-				.First(x => !RpgGame.Battle.AllyStatuses[x].HasFlag(RpgGame.Battle.Status.Stone) &&
-					!RpgGame.Battle.AllyStatuses[x].HasFlag(RpgGame.Battle.Status.Dead));
+				.Where(x => !RpgGame.Battle.AllyStatuses[x].HasFlag(RpgGame.Battle.Status.Stone) &&
+					!RpgGame.Battle.AllyStatuses[x].HasFlag(RpgGame.Battle.Status.Dead) &&
+					!RpgGame.Battle.AllyStatuses[x].HasFlag(RpgGame.Battle.Status.Stun) &&
+					!RpgGame.Battle.AllyStatuses[x].HasFlag(RpgGame.Battle.Status.Sleep))
+				.DefaultIfEmpty(-1)
+				.First();
 
 			BattleMenu.ActivityType = -1;
 			BattleMenu.Activity = -1;
@@ -120,6 +125,9 @@ namespace ConsoleGame
 
 			BattleScreen.Draw();
 			Screen.Update();
+
+			if(BattleMenu.Character == -1)
+				WriteActions();
 		}
 
 		private static void Battle_TurnComplete()

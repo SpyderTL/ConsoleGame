@@ -111,10 +111,28 @@ namespace ConsoleGame
 
 							case 1:
 								// Battle
-								RpgGame.Party.Characters[0] = new RpgGame.Party.Character { Name = "Alpha", Type = RpgGame.Party.CharacterType.Fighter, Health = 100, MaxHealth = 100, Power = 100, MaxPower = 100 };
-								RpgGame.Party.Characters[1] = new RpgGame.Party.Character { Name = "Beta", Type = RpgGame.Party.CharacterType.Fighter, Health = 100, MaxHealth = 100, Power = 100, MaxPower = 100 };
-								RpgGame.Party.Characters[2] = new RpgGame.Party.Character { Name = "Gamma", Type = RpgGame.Party.CharacterType.Fighter, Health = 100, MaxHealth = 100, Power = 100, MaxPower = 100 };
-								RpgGame.Party.Characters[3] = new RpgGame.Party.Character { Name = "Delta", Type = RpgGame.Party.CharacterType.Fighter, Health = 100, MaxHealth = 100, Power = 100, MaxPower = 100 };
+								RpgGame.Party.Characters = new[] { "Alpha", "Beta", "Gamma", "Delta" }
+									.Select(x => new RpgGame.Party.Character
+									{
+										Name = x,
+										Type = RpgGame.Party.CharacterType.Fighter,
+										Health = RpgGame.ClassData.Classes[(int)RpgGame.Party.CharacterType.Fighter].Health + 1000,
+										MaxHealth = RpgGame.ClassData.Classes[(int)RpgGame.Party.CharacterType.Fighter].Health + 1000,
+										Strength = RpgGame.ClassData.Classes[(int)RpgGame.Party.CharacterType.Fighter].Strength,
+										Agility = RpgGame.ClassData.Classes[(int)RpgGame.Party.CharacterType.Fighter].Agility,
+										Intelligence = RpgGame.ClassData.Classes[(int)RpgGame.Party.CharacterType.Fighter].Intelligence,
+										Vitality = RpgGame.ClassData.Classes[(int)RpgGame.Party.CharacterType.Fighter].Vitality,
+										Luck = RpgGame.ClassData.Classes[(int)RpgGame.Party.CharacterType.Fighter].Luck,
+										Damage = RpgGame.ClassData.Classes[(int)RpgGame.Party.CharacterType.Fighter].Damage,
+										Accuracy = RpgGame.ClassData.Classes[(int)RpgGame.Party.CharacterType.Fighter].Accuracy,
+										Evade = RpgGame.ClassData.Classes[(int)RpgGame.Party.CharacterType.Fighter].Evade,
+										//MagicDefense = RpgGame.ClassData.Classes[(int)RpgGame.Party.CharacterType.Fighter].MagicDefense
+
+										Hits = (RpgGame.ClassData.Classes[(int)RpgGame.Party.CharacterType.Fighter].Accuracy >> 5) + 1,
+										Level = 1,
+										Experience = 0,
+										Absorb = 0
+									}).ToArray();
 
 								RpgGame.PartyWorld.X = 153;
 								RpgGame.PartyWorld.Y = 165;
@@ -125,10 +143,16 @@ namespace ConsoleGame
 
 								RpgParty.Refresh();
 
+								var spellCasters = Enumerable.Range(0, 128)
+									.Where(x => RpgGame.Battle.Formations[x]
+										.Any(y => y.Minimum != 0 &&
+											RpgGame.Battle.EnemyTypes[y.Type].Logic != 255))
+									.ToArray();
+
 								var random = new Random();
 
-								//RpgGame.DataBattle.LoadFormation(random.Next(0, 128), random.Next(0, 2) == 1);
-								RpgGame.BattleData.LoadFormation(random.Next(0x6e, 0x6f), false);
+								RpgGame.BattleData.LoadFormation(spellCasters[random.Next(0, spellCasters.Length)], false);
+								//RpgGame.BattleData.LoadFormation(random.Next(0x6e, 0x6f), false);
 
 								RpgBattle.ReadData();
 								RpgBattle.ReadCharacters();

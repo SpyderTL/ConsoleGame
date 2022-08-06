@@ -23,14 +23,19 @@ namespace ConsoleGame
 				switch (ActivityType)
 				{
 					case -1:
-						Items = new MenuItem[]
-						{
-							new MenuItem { Text = "Attack", ActivityType = Battle.ActivityType.Attack, Activity = -1, Option = -1 },
-							new MenuItem { Text = "Ability", ActivityType = Battle.ActivityType.Ability, Activity = -1, Option = -1 },
-							new MenuItem { Text = "Spell", ActivityType = Battle.ActivityType.Spell, Activity = -1, Option = -1 },
-							new MenuItem { Text = "Item", ActivityType = Battle.ActivityType.Item, Activity = -1, Option = -1 },
-							new MenuItem { Text = "Run", ActivityType = Battle.ActivityType.Run, Activity = -1, Option = Enumerable.Range(0, Battle.Options[Character].Length).First(x => Battle.Options[Character][x].Type == Battle.ActivityType.Run) },
-						};
+						Items = Battle.Options[Character]
+							.GroupBy(x => x.Type)
+							.Select(x => new MenuItem { Text = x.Key.ToString(), ActivityType = x.Key, Activity = -1, Option = -1 })
+							.ToArray();
+
+						//Items = new MenuItem[]
+						//{
+						//	new MenuItem { Text = "Attack", ActivityType = Battle.ActivityType.Attack, Activity = -1, Option = -1 },
+						//	new MenuItem { Text = "Ability", ActivityType = Battle.ActivityType.Ability, Activity = -1, Option = -1 },
+						//	new MenuItem { Text = "Spell", ActivityType = Battle.ActivityType.Spell, Activity = -1, Option = -1 },
+						//	new MenuItem { Text = "Item", ActivityType = Battle.ActivityType.Item, Activity = -1, Option = -1 },
+						//	//new MenuItem { Text = "Run", ActivityType = Battle.ActivityType.Run, Activity = -1, Option = Enumerable.Range(0, Battle.Options[Character].Length).First(x => Battle.Options[Character][x].Type == Battle.ActivityType.Run) },
+						//};
 						break;
 
 					case (int)Battle.ActivityType.Attack:

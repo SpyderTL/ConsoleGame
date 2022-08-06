@@ -54,18 +54,64 @@ namespace RpgGame
 
 				reader.BaseStream.Position = Data.Position(0x0B, 0x94E0);
 
-				var addresses = new int[128];
+				var enemyAddresses = new int[128];
 
 				for (var enemy = 0; enemy < 128; enemy++)
 				{
-					addresses[enemy] = reader.ReadUInt16();
+					enemyAddresses[enemy] = reader.ReadUInt16();
 				}
 
 				for (var enemy = 0; enemy < 128; enemy++)
 				{
-					reader.BaseStream.Position = Data.Position(0x0B, addresses[enemy]);
+					reader.BaseStream.Position = Data.Position(0x0B, enemyAddresses[enemy]);
 
 					Battle.EnemyTypes[enemy].Name = reader.ReadName();
+				}
+
+				var spellAddresses = new int[64];
+				var potionAddresses = new int[2];
+				var abilityAddresses = new int[26];
+
+				reader.BaseStream.Position = Data.Position(0x0A, 0xB860);
+
+				for (var spell = 0; spell < 64; spell++)
+				{
+					spellAddresses[spell] = reader.ReadUInt16();
+				}
+
+				reader.BaseStream.Position = Data.Position(0x0A, 0xB732);
+
+				for (var potion = 0; potion < 2; potion++)
+				{
+					potionAddresses[potion] = reader.ReadUInt16();
+				}
+
+				reader.BaseStream.Position = Data.Position(0x0A, 0xB600);
+
+				for (var ability = 0; ability < 26; ability++)
+				{
+					abilityAddresses[ability] = reader.ReadUInt16();
+				}
+
+				for (var spell = 0; spell < 64; spell++)
+				{
+					reader.BaseStream.Position = Data.Position(0x0A, spellAddresses[spell]);
+
+					Battle.SpellTypes[spell].Name = reader.ReadName();
+				}
+
+				for (var potion = 0; potion < 2; potion++)
+				{
+					reader.BaseStream.Position = Data.Position(0x0A, potionAddresses[potion]);
+
+					Battle.PotionTypes[potion].Name = reader.ReadName();
+				}
+
+				for (var ability = 0; ability < 26; ability++)
+				{
+					reader.BaseStream.Position = Data.Position(0x0A, abilityAddresses[ability]);
+
+					Battle.AbilityTypes[ability].Name = reader.ReadName();
 				}
 
 				reader.BaseStream.Position = Data.Position(0x0C, 0x81E0);
@@ -91,7 +137,7 @@ namespace RpgGame
 							break;
 
 						case Battle.MagicEffect.Status:
-						case Battle.MagicEffect.Status2:
+						case Battle.MagicEffect.ForceStatus:
 						case Battle.MagicEffect.Cure:
 						case Battle.MagicEffect.CureAll:
 							Battle.SpellTypes[spell].EffectStatus = (Battle.Status)value;
@@ -124,7 +170,7 @@ namespace RpgGame
 							break;
 
 						case Battle.MagicEffect.Status:
-						case Battle.MagicEffect.Status2:
+						case Battle.MagicEffect.ForceStatus:
 						case Battle.MagicEffect.Cure:
 						case Battle.MagicEffect.CureAll:
 							Battle.PotionTypes[potion].EffectStatus = (Battle.Status)value;
@@ -157,7 +203,7 @@ namespace RpgGame
 							break;
 
 						case Battle.MagicEffect.Status:
-						case Battle.MagicEffect.Status2:
+						case Battle.MagicEffect.ForceStatus:
 						case Battle.MagicEffect.Cure:
 						case Battle.MagicEffect.CureAll:
 							Battle.AbilityTypes[ability].EffectStatus = (Battle.Status)value;
@@ -168,35 +214,63 @@ namespace RpgGame
 							break;
 					}
 				}
+
+				reader.BaseStream.Position = Data.Position(0x0B, 0x8400);
+
+				for (var formation = 0; formation < 128; formation++)
+				{
+					Battle.Formations[formation] = new Battle.FormationType[4];
+
+					var data = reader.ReadBytes(16);
+
+					Battle.Formations[formation][0].Type = data[2];
+					Battle.Formations[formation][1].Type = data[3];
+					Battle.Formations[formation][2].Type = data[4];
+					Battle.Formations[formation][3].Type = data[5];
+
+					Battle.Formations[formation][0].Minimum = data[6] >> 4;
+					Battle.Formations[formation][0].Maximum = data[6] & 0x0f;
+					Battle.Formations[formation][1].Minimum = data[7] >> 4;
+					Battle.Formations[formation][1].Maximum = data[7] & 0x0f;
+					Battle.Formations[formation][2].Minimum = data[8] >> 4;
+					Battle.Formations[formation][2].Maximum = data[8] & 0x0f;
+					Battle.Formations[formation][3].Minimum = data[9] >> 4;
+					Battle.Formations[formation][3].Maximum = data[9] & 0x0f;
+
+					Battle.Formations[formation][0].AlternateMinimum = data[14] >> 4;
+					Battle.Formations[formation][0].AlternateMaximum = data[14] & 0x0f;
+					Battle.Formations[formation][1].AlternateMinimum = data[15] >> 4;
+					Battle.Formations[formation][1].AlternateMaximum = data[15] & 0x0f;
+				}
 			}
 		}
 
 		public static void LoadFormation(int formation, bool alternate)
 		{
-			using (var reader = Data.Reader())
-			{
-				reader.BaseStream.Position = Data.Position(0x0B, 0x8400 + (formation * 16));
+			//using (var reader = Data.Reader())
+			//{
+			//	reader.BaseStream.Position = Data.Position(0x0B, 0x8400 + (formation * 16));
 
-				var data = reader.ReadBytes(16);
+			//	var data = reader.ReadBytes(16);
 
-				var enemy1 = data[2];
-				var enemy2 = data[3];
-				var enemy3 = data[4];
-				var enemy4 = data[5];
+				var enemy1 = Battle.Formations[formation][0].Type;
+				var enemy2 = Battle.Formations[formation][1].Type;
+				var enemy3 = Battle.Formations[formation][2].Type;
+				var enemy4 = Battle.Formations[formation][3].Type;
 
-				var minimum1 = data[6] >> 4;
-				var maximum1 = data[6] & 0x0f;
-				var minimum2 = data[7] >> 4;
-				var maximum2 = data[7] & 0x0f;
-				var minimum3 = data[8] >> 4;
-				var maximum3 = data[8] & 0x0f;
-				var minimum4 = data[9] >> 4;
-				var maximum4 = data[9] & 0x0f;
+				var minimum1 = Battle.Formations[formation][0].Minimum;
+				var maximum1 = Battle.Formations[formation][0].Maximum;
+				var minimum2 = Battle.Formations[formation][1].Minimum;
+				var maximum2 = Battle.Formations[formation][1].Maximum;
+				var minimum3 = Battle.Formations[formation][2].Minimum;
+				var maximum3 = Battle.Formations[formation][2].Maximum;
+				var minimum4 = Battle.Formations[formation][3].Minimum;
+				var maximum4 = Battle.Formations[formation][3].Maximum;
 
-				var alternateMinimum1 = data[14] >> 4;
-				var alternateMaximum1 = data[14] & 0x0f;
-				var alternateMinimum2 = data[15] >> 4;
-				var alternateMaximum2 = data[15] & 0x0f;
+				var alternateMinimum1 = Battle.Formations[formation][0].AlternateMinimum;
+				var alternateMaximum1 = Battle.Formations[formation][0].AlternateMaximum;
+				var alternateMinimum2 = Battle.Formations[formation][1].AlternateMinimum;
+				var alternateMaximum2 = Battle.Formations[formation][1].AlternateMaximum;
 
 				var enemies = new List<Battle.Enemy>();
 
@@ -210,16 +284,16 @@ namespace RpgGame
 					var count4 = random.Next(minimum4, maximum4 + 1);
 
 					for (var x = 0; x < count1 && enemies.Count < 9; x++)
-						enemies.Add(new Battle.Enemy { Type = enemy1, Health = Battle.EnemyTypes[enemy1].Health, MaxHealth = Battle.EnemyTypes[enemy1].Health });
+						enemies.Add(new Battle.Enemy { Type = enemy1, Health = Battle.EnemyTypes[enemy1].Health, MaxHealth = Battle.EnemyTypes[enemy1].Health, Evade = Battle.EnemyTypes[enemy1].Evade });
 
 					for (var x = 0; x < count2 && enemies.Count < 9; x++)
-						enemies.Add(new Battle.Enemy { Type = enemy2, Health = Battle.EnemyTypes[enemy2].Health, MaxHealth = Battle.EnemyTypes[enemy2].Health });
+						enemies.Add(new Battle.Enemy { Type = enemy2, Health = Battle.EnemyTypes[enemy2].Health, MaxHealth = Battle.EnemyTypes[enemy2].Health, Evade = Battle.EnemyTypes[enemy2].Evade });
 
 					for (var x = 0; x < count3 && enemies.Count < 9; x++)
-						enemies.Add(new Battle.Enemy { Type = enemy3, Health = Battle.EnemyTypes[enemy3].Health, MaxHealth = Battle.EnemyTypes[enemy3].Health });
+						enemies.Add(new Battle.Enemy { Type = enemy3, Health = Battle.EnemyTypes[enemy3].Health, MaxHealth = Battle.EnemyTypes[enemy3].Health, Evade = Battle.EnemyTypes[enemy3].Evade });
 
 					for (var x = 0; x < count4 && enemies.Count < 9; x++)
-						enemies.Add(new Battle.Enemy { Type = enemy4, Health = Battle.EnemyTypes[enemy4].Health, MaxHealth = Battle.EnemyTypes[enemy4].Health });
+						enemies.Add(new Battle.Enemy { Type = enemy4, Health = Battle.EnemyTypes[enemy4].Health, MaxHealth = Battle.EnemyTypes[enemy4].Health, Evade = Battle.EnemyTypes[enemy4].Evade });
 				}
 				else
 				{
@@ -227,14 +301,14 @@ namespace RpgGame
 					var alternateCount2 = random.Next(alternateMinimum2, alternateMaximum2 + 1);
 
 					for (var x = 0; x < alternateCount1 && enemies.Count < 9; x++)
-						enemies.Add(new Battle.Enemy { Type = enemy1, Health = Battle.EnemyTypes[enemy1].Health, MaxHealth = Battle.EnemyTypes[enemy1].Health });
+						enemies.Add(new Battle.Enemy { Type = enemy1, Health = Battle.EnemyTypes[enemy1].Health, MaxHealth = Battle.EnemyTypes[enemy1].Health, Evade = Battle.EnemyTypes[enemy1].Evade });
 
 					for (var x = 0; x < alternateCount2 && enemies.Count < 9; x++)
-						enemies.Add(new Battle.Enemy { Type = enemy2, Health = Battle.EnemyTypes[enemy2].Health, MaxHealth = Battle.EnemyTypes[enemy2].Health });
+						enemies.Add(new Battle.Enemy { Type = enemy2, Health = Battle.EnemyTypes[enemy2].Health, MaxHealth = Battle.EnemyTypes[enemy2].Health, Evade = Battle.EnemyTypes[enemy2].Evade });
 				}
 
 				Battle.Enemies = enemies.ToArray();
-			}
+			//}
 		}
 
 		private static string ReadName(this BinaryReader reader)
